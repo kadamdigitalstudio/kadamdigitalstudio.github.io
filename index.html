@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kadam Digital Studio | Websites & Custom Web Software</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background-color: #f8fafc;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navigation */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #2563eb;
+      text-decoration: none;
+      letter-spacing: -0.4px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: #2563eb;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-whatsapp {
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    .btn-whatsapp:hover {
+      background: #15803d;
+    }
+
+    .btn-outline {
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      background: #ffffff;
+    }
+
+    .btn-outline:hover {
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 70px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+    }
+
+    .badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      color: #0f172a;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 0 auto 28px;
+      font-size: 1.1rem;
+      color: #475569;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Sections */
+    section {
+      padding: 70px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+
+    .section-title h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #64748b;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 26px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
+
+    .card p {
+      color: #475569;
+      font-size: 0.96rem;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      background: #f1f5f9;
+      color: #334155;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .project-link {
+      font-weight: 600;
+      color: #2563eb;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .project-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Contact Box */
+    .contact-box {
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 48px 28px;
+      text-align: center;
+    }
+
+    .contact-box h2 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .contact-box p {
+      color: #cbd5e1;
+      max-width: 550px;
+      margin: 0 auto 28px;
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .contact-details {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding-top: 22px;
+      border-top: 1px solid #334155;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    .contact-details a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+
+    .contact-details a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px 0;
+      color: #64748b;
+      font-size: 0.9rem;
+      border-top: 1px solid #e2e8f0;
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a href="#" class="logo">Kadam Digital Studio</a>
+      <nav class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#work">Our Work</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <span class="badge">Websites & Custom Business Tools</span>
+      <h1>We Build Fast Websites & Smart Tools That Grow Your Business</h1>
+      <p>
+        From modern mobile-friendly business websites to custom digital billing systems that replace messy paperwork—built clean, fast, and easy to use.
+      </p>
+      <div class="hero-buttons">
+        <a href="#work" class="btn btn-primary">See Our Work</a>
+        <a href="#contact" class="btn btn-outline">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="container">
+      <div class="section-title">
+        <h2>What We Build</h2>
+        <p>Focused digital solutions designed to bring you more customers and save your daily time.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Business Websites</h3>
+          <p>Clean, mobile-friendly websites for shops, clinics, restaurants, and growing brands so customers trust you online.</p>
+        </div>
+        <div class="card">
+          <h3>Custom Billing & Web Tools</h3>
+          <p>Digital tools like billing dashboards and record history systems that eliminate paper files and manual errors.</p>
+        </div>
+        <div class="card">
+          <h3>Website Redesigns</h3>
+          <p>Turn slow, outdated, or broken mobile websites into modern, fast pages that convert visitors into calls.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio / Work -->
+  <section id="work" style="background: #ffffff; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+    <div class="container">
+      <div class="section-title">
+        <h2>Featured Work</h2>
+        <p>Real projects showcasing how we solve problems with clean design and working code.</p>
+      </div>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));">
+        <!-- Project 1: Courier Billing App -->
+        <div class="card">
+          <span class="tag">Web App • Billing System</span>
+          <h3>Courier Billing & History System</h3>
+          <p>
+            A digital billing tool supporting partial and monthly invoicing with an instant history archive—eliminating hardcopy table files.
+          </p>
+          <!-- Replace # once your Courier App is hosted live -->
+          <a href="courier-demo.html" class="project-link">Try Live Demo →</a>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="card">
+          <span class="tag">Website + POS Software</span>
+          <h3>Restaurant Site & Owner Billing POS</h3>
+          <p>
+            Customer-facing menu & table booking website paired with a table-wise Owner POS billing & sales history system.
+          </p>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a href="restaurant-demo.html" class="project-link">Customer Site →</a>
+            <a href="restaurant-pos-demo.html" class="project-link">Owner POS Demo →</a>
+          </div>
+        </div>
+
+       <!-- Project 3 -->
+        <div class="card">
+          <span class="tag">Demo • Healthcare Website</span>
+          <h3>Clinic & Appointment Booking Site</h3>
+          <p>
+            Clean multi-specialty clinic website featuring specialist profiles and instant mobile appointment booking.
+          </p>
+          <a href="clinic-demo.html" class="project-link">Try Live Demo →</a>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="card">
+          <span class="tag">POS Software • PC & Mobile</span>
+          <h3>Grocery Store Billing & Udhaar POS</h3>
+          <p>
+            Works on both PC and mobile—weight/unit billing, quick search, custom items, UPI/Cash/Udhaar tracking, and printable slips.
+          </p>
+          <a href="grocery-pos-demo.html" class="project-link">Try Live Demo →</a>
+        </div> 
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-box">
+        <h2>Ready to Build Something Great?</h2>
+        <p>Tell us about your business or website idea. We work with clients online across India & globally.</p>
+        <div class="contact-actions">
+          <a href="mailto:kadamdigitalstudio@gmail.com" class="btn btn-primary">Email Us</a>
+          <a href="https://wa.me/917498796702?text=Hello%20Kadam%20Digital%20Studio%2C%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">Chat on WhatsApp</a>
+          <a href="tel:+917498796702" class="btn btn-outline">Call Now</a>
+        </div>
+        <div class="contact-details">
+          <span><strong>Email:</strong> <a href="mailto:kadamdigitalstudio@gmail.com">kadamdigitalstudio@gmail.com</a></span>
+          <span><strong>Phone:</strong> <a href="tel:+917498796702">+91 74987 96702</a></span>
+          <span><strong>Location:</strong> M.I.D.C., Ahilyanagar, Maharashtra</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Kadam Digital Studio • M.I.D.C., Ahilyanagar. Founded by Shivam Kadam.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>

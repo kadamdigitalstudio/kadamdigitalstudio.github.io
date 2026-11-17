@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saffron & Ember POS Billing (Demo) | Kadam Digital Studio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+
+    /* Demo Bar */
+    .demo-bar {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 10px 20px;
+      font-size: 0.88rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .demo-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .demo-actions a,
+    .demo-actions button {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-amber { background: #d97706; color: #fff; }
+    .btn-amber:hover { background: #b45309; }
+    .btn-blue { background: #2563eb; color: #fff; }
+    .btn-blue:hover { background: #1d4ed8; }
+    .btn-slate { background: #475569; color: #fff; }
+    .btn-slate:hover { background: #334155; }
+
+    .pos-wrapper {
+      max-width: 1280px;
+      margin: 18px auto 40px;
+      padding: 0 16px;
+    }
+
+    /* Top Tabs */
+    .top-bar {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-title h1 {
+      font-size: 1.25rem;
+      color: #1c1917;
+    }
+
+    .brand-title p {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 9px 16px;
+      border-radius: 7px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: #1c1917;
+      color: #fbbf24;
+      border-color: #1c1917;
+    }
+
+    /* POS Layout */
+    .pos-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Table Selector */
+    .table-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .table-pill {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .table-pill.active {
+      background: #fef3c7;
+      border-color: #d97706;
+      color: #92400e;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      display: inline-block;
+    }
+
+    .dot.busy {
+      background: #16a34a;
+    }
+
+    /* Category Pills */
+    .cat-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .cat-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .cat-pill.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+    }
+
+    /* Menu Tap Cards */
+    .menu-tap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      gap: 10px;
+    }
+
+    .dish-btn {
+      text-align: left;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 84px;
+    }
+
+    .dish-btn:hover {
+      border-color: #d97706;
+      background: #fffbeb;
+    }
+
+    .dish-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .dish-price {
+      font-weight: 800;
+      color: #b45309;
+      font-size: 0.92rem;
+    }
+
+    /* Bill Cart */
+    .cust-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .cust-row input,
+    .calc-controls input,
+    .calc-controls select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.88rem;
+    }
+
+    .bill-table-wrap {
+      max-height: 260px;
+      overflow-y: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    table.cart-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    table.cart-table th,
+    table.cart-table td {
+      padding: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    table.cart-table th {
+      background: #f8fafc;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      color: #475569;
+    }
+
+    .qty-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qty-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .qty-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .del-btn {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .calc-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .calc-controls label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .totals-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      color: #475569;
+    }
+
+    .grand-line {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1.5px dashed #cbd5e1;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .bill-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-action {
+      padding: 11px;
+      border: none;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn-green { background: #16a34a; color: #fff; }
+    .btn-green:hover { background: #15803d; }
+    .btn-dark { background: #0f172a; color: #fff; }
+    .btn-dark:hover { background: #1e293b; }
+    .btn-red { background: #fee2e2; color: #b91c1c; }
+    .btn-red:hover { background: #fecaca; }
+
+    /* History Tab */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .stat-val {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-top: 4px;
+    }
+
+    .history-wrap {
+      overflow-x: auto;
+    }
+
+    table.history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    table.history-table th,
+    table.history-table td {
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    table.history-table th {
+      background: #1e293b;
+      color: #ffffff;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    /* Receipt Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 10px;
+      max-width: 420px;
+      width: 100%;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .receipt-paper {
+      border: 1.5px dashed #334155;
+      padding: 16px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      color: #000;
+      background: #fff;
+    }
+
+    .r-center { text-align: center; }
+    .r-line { border-top: 1px dashed #334155; margin: 8px 0; }
+    .r-row { display: flex; justify-content: space-between; margin: 3px 0; }
+
+    #printable-receipt {
+      display: none;
+    }
+
+    @media screen and (max-width: 900px) {
+      .pos-grid {
+        grid-template-columns: 1fr;
+      }
+      .calc-controls {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        padding: 0 !important;
+      }
+      .demo-bar, .pos-wrapper, .modal {
+        display: none !important;
+      }
+      #printable-receipt {
+        display: block !important;
+        max-width: 340px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo Notice Bar -->
+  <div class="demo-bar">
+    <span><strong>Restaurant Owner POS & Billing Demo</strong> • Built by Kadam Digital Studio</span>
+    <div class="demo-actions">
+      <a href="restaurant-demo.html" class="btn-amber">🍽️ View Customer Website</a>
+      <button type="button" class="btn-slate" onclick="resetPosDemo()">🔄 Reset Demo</button>
+      <a href="index.html" class="btn-blue">← Back to Kadam Digital Studio</a>
+    </div>
+  </div>
+
+  <div class="pos-wrapper">
+    <!-- Top Header -->
+    <div class="top-bar">
+      <div class="brand-title">
+        <h1>Saffron & Ember Bistro — Owner Billing POS (Demo)</h1>
+        <p>Table management, instant GST billing & daily sales archive (saves in your browser only).</p>
+      </div>
+      <div class="tabs">
+        <button type="button" class="tab-btn active" id="btnPosTab" onclick="switchPosTab('pos')">🧾 Billing Counter</button>
+        <button type="button" class="tab-btn" id="btnHistTab" onclick="switchPosTab('history')">📜 Bills & Daily Sales</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: BILLING COUNTER -->
+    <div id="posSection" class="pos-grid">
+      <!-- Left: Tables & Menu -->
+      <div class="panel">
+        <div class="panel-title">1. Select Table / Order Type</div>
+        <div class="table-pills" id="tablePills"></div>
+
+        <div class="panel-title">2. Tap Dish to Add to Bill</div>
+        <div class="cat-pills">
+          <button type="button" class="cat-pill active" onclick="setCategory('all', this)">All</button>
+          <button type="button" class="cat-pill" onclick="setCategory('starters', this)">Starters</button>
+          <button type="button" class="cat-pill" onclick="setCategory('mains', this)">Main Course</button>
+          <button type="button" class="cat-pill" onclick="setCategory('drinks', this)">Coffee & Desserts</button>
+        </div>
+
+        <div class="menu-tap-grid" id="menuTapGrid"></div>
+      </div>
+
+      <!-- Right: Active Table Bill -->
+      <div class="panel">
+        <div class="panel-title" id="activeTableHeading">Current Bill: Table 1</div>
+
+        <div class="cust-row">
+          <input type="text" id="custName" placeholder="Customer Name (Optional)" />
+          <input type="text" id="custPhone" placeholder="Mobile No (Optional)" />
+        </div>
+
+        <div class="bill-table-wrap">
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Amt (₹)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cartTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="calc-controls">
+          <div>
+            <label for="discountPct">Discount (%)</label>
+            <input type="number" id="discountPct" value="0" min="0" max="100" oninput="renderCart()" />
+          </div>
+          <div>
+            <label for="gstPct">GST (%)</label>
+            <select id="gstPct" onchange="renderCart()">
+              <option value="5" selected>5% GST</option>
+              <option value="0">0% (No Tax)</option>
+              <option value="12">12% GST</option>
+            </select>
+          </div>
+          <div>
+            <label for="payMode">Payment Mode</label>
+            <select id="payMode">
+              <option value="UPI">UPI / QR</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="totals-box">
+          <div class="total-line"><span>Subtotal</span><span id="lblSubtotal">₹0.00</span></div>
+          <div class="total-line"><span>Discount</span><span id="lblDiscount">- ₹0.00</span></div>
+          <div class="total-line"><span>GST</span><span id="lblGst">₹0.00</span></div>
+          <div class="grand-line"><span>GRAND TOTAL</span><span id="lblGrandTotal">₹0.00</span></div>
+        </div>
+
+        <div class="bill-actions">
+          <button type="button" class="btn-action btn-green" onclick="finalizeBill()">✅ Finalize & Save Bill</button>
+          <button type="button" class="btn-action btn-dark" onclick="previewCurrentReceipt()">🖨️ Preview / Print</button>
+        </div>
+        <button type="button" class="btn-action btn-red" style="width: 100%; margin-top: 8px;" onclick="clearCurrentTable()">Clear Current Table</button>
+      </div>
+    </div>
+
+    <!-- TAB 2: BILLS HISTORY & DAILY SALES -->
+    <div id="historySection" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Sales (Demo)</div>
+          <div class="stat-val" id="statTotalSales">₹0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Finalized Bills</div>
+          <div class="stat-val" id="statTotalBills">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">UPI / Card Collections</div>
+          <div class="stat-val" id="statDigitalSales">₹0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cash Collections</div>
+          <div class="stat-val" id="statCashSales">₹0.00</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Archived Restaurant Bills History</div>
+        <div class="history-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Bill No</th>
+                <th>Date & Time</th>
+                <th>Table / Type</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Payment</th>
+                <th>Total (₹)</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="posHistoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen Receipt Modal -->
+  <div id="receiptModal" class="modal">
+    <div class="modal-card">
+      <div id="modalReceiptContent"></div>
+      <div style="display: flex; gap: 10px; margin-top: 14px;">
+        <button type="button" class="btn-action btn-dark" style="flex: 1;" onclick="printPreparedReceipt()">🖨️ Print Receipt</button>
+        <button type="button" class="btn-action btn-red" style="flex: 1;" onclick="closeReceiptModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dedicated Print Target -->
+  <div id="printable-receipt"></div>
+
+  <script>
+    const POS_KEY = "KDS_DEMO_RESTAURANT_POS_V1";
+
+    const MENU_ITEMS = [
+      { id: 1, name: "Crispy Herb Paneer Bites", price: 240, cat: "starters" },
+      { id: 2, name: "Roasted Tomato Bruschetta", price: 190, cat: "starters" },
+      { id: 3, name: "Smoky Tandoori Platter", price: 420, cat: "mains" },
+      { id: 4, name: "Creamy Pesto Penne", price: 310, cat: "mains" },
+      { id: 5, name: "Butter Garlic Naan (2 pcs)", price: 110, cat: "mains" },
+      { id: 6, name: "Saffron Cold Brew", price: 160, cat: "drinks" },
+      { id: 7, name: "Warm Walnut Brownie", price: 180, cat: "drinks" },
+      { id: 8, name: "Fresh Mint Lemonade", price: 110, cat: "drinks" }
+    ];
+
+    const TABLES = ["Table 1", "Table 2", "Table 3", "Table 4", "Takeaway"];
+    let selectedTable = "Table 1";
+    let selectedCategory = "all";
+
+    function createInitialPosState() {
+      const now = new Date();
+      const todayStr = now.toLocaleDateString("en-IN");
+      return {
+        nextBillNo: 103,
+        activeOrders: {
+          "Table 1": [
+            { id: 3, name: "Smoky Tandoori Platter", price: 420, qty: 1 },
+            { id: 6, name: "Saffron Cold Brew", price: 160, qty: 2 }
+          ],
+          "Table 2": [],
+          "Table 3": [],
+          "Table 4": [],
+          "Takeaway": []
+        },
+        history: [
+          {
+            billNo: "RES-102",
+            dateTime: `${todayStr}, 1:45 PM`,
+            table: "Table 3",
+            customer: "Amit Joshi (Demo)",
+            payMode: "UPI",
+            subtotal: 550,
+            discountAmt: 0,
+            gstPct: 5,
+            gstAmt: 27.5,
+            grandTotal: 577.5,
+            items: [
+              { id: 4, name: "Creamy Pesto Penne", price: 310, qty: 1 },
+              { id: 1, name: "Crispy Herb Paneer Bites", price: 240, qty: 1 }
+            ]
+          },
+          {
+            billNo: "RES-101",
+            dateTime: `${todayStr}, 12:30 PM`,
+            table: "Takeaway",
+            customer: "Walk-in Guest",
+            payMode: "Cash",
+            subtotal: 340,
+            discountAmt: 0,
+            gstPct: 5,
+            gstAmt: 17,
+            grandTotal: 357,
+            items: [
+              { id: 6, name: "Saffron Cold Brew", price: 160, qty: 1 },
+              { id: 7, name: "Warm Walnut Brownie", price: 180, qty: 1 }
+            ]
+          }
+        ]
+      };
+    }
+
+    function loadPosState() {
+      const raw = localStorage.getItem(POS_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.activeOrders && parsed.history) return parsed;
+        } catch (e) {}
+      }
+      const fresh = createInitialPosState();
+      localStorage.setItem(POS_KEY, JSON.stringify(fresh));
+      return fresh;
+    }
+
+    let posDb = loadPosState();
+
+    function savePosState() {
+      localStorage.setItem(POS_KEY, JSON.stringify(posDb));
+    }
+
+    function resetPosDemo() {
+      if (!confirm("Reset Restaurant POS demo back to sample data?")) return;
+      localStorage.removeItem(POS_KEY);
+      posDb = loadPosState();
+      selectedTable = "Table 1";
+      renderAll();
+    }
+
+    function switchPosTab(tab) {
+      document.getElementById("posSection").style.display = tab === "pos" ? "grid" : "none";
+      document.getElementById("historySection").style.display = tab === "history" ? "block" : "none";
+      document.getElementById("btnPosTab").className = "tab-btn" + (tab === "pos" ? " active" : "");
+      document.getElementById("btnHistTab").className = "tab-btn" + (tab === "history" ? " active" : "");
+      if (tab === "history") renderHistory();
+    }
+
+    function renderTablePills() {
+      const container = document.getElementById("tablePills");
+      container.innerHTML = "";
+      TABLES.forEach(t => {
+        const hasItems = (posDb.activeOrders[t] || []).length > 0;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "table-pill" + (t === selectedTable ? " active" : "");
+        btn.innerHTML = `<span class="dot ${hasItems ? 'busy' : ''}"></span> ${t}`;
+        btn.onclick = () => {
+          selectedTable = t;
+          renderTablePills();
+          renderCart();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function setCategory(cat, btnEl) {
+      selectedCategory = cat;
+      document.querySelectorAll(".cat-pill").forEach(b => b.classList.remove("active"));
+      btnEl.classList.add("active");
+      renderMenuGrid();
+    }
+
+    function renderMenuGrid() {
+      const grid = document.getElementById("menuTapGrid");
+      grid.innerHTML = "";
+      MENU_ITEMS.filter(m => selectedCategory === "all" || m.cat === selectedCategory).forEach(item => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "dish-btn";
+        btn.innerHTML = `<span class="dish-name">${item.name}</span><span class="dish-price">₹${item.price.toFixed(2)}</span>`;
+        btn.onclick = () => addItemToTable(item);
+        grid.appendChild(btn);
+      });
+    }
+
+    function addItemToTable(item) {
+      if (!posDb.activeOrders[selectedTable]) posDb.activeOrders[selectedTable] = [];
+      const order = posDb.activeOrders[selectedTable];
+      const existing = order.find(x => x.id === item.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        order.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
+      }
+      savePosState();
+      renderTablePills();
+      renderCart();
+    }
+
+    function changeQty(itemId, delta) {
+      const order = posDb.activeOrders[selectedTable] || [];
+      const item = order.find(x => x.id === itemId);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        posDb.activeOrders[selectedTable] = order.filter(x => x.id !== itemId);
+      }
+      savePosState();
+      renderTablePills();
+      renderCart();
+    }
+
+    function removeCartItem(itemId) {
+      posDb.activeOrders[selectedTable] = (posDb.activeOrders[selectedTable] || []).filter(x => x.id !== itemId);
+      savePosState();
+      renderTablePills();
+      renderCart();
+    }
+
+    function clearCurrentTable() {
+      const order = posDb.activeOrders[selectedTable] || [];
+      if (order.length === 0) return;
+      if (!confirm(`Clear all items from ${selectedTable}?`)) return;
+      posDb.activeOrders[selectedTable] = [];
+      savePosState();
+      renderTablePills();
+      renderCart();
+    }
+
+    function getCartCalculations() {
+      const order = posDb.activeOrders[selectedTable] || [];
+      let subtotal = 0;
+      order.forEach(i => subtotal += i.price * i.qty);
+
+      const discPct = Math.min(100, Math.max(0, parseFloat(document.getElementById("discountPct").value) || 0));
+      const discountAmt = subtotal * (discPct / 100);
+      const taxable = Math.max(0, subtotal - discountAmt);
+      const gstPct = parseFloat(document.getElementById("gstPct").value) || 0;
+      const gstAmt = taxable * (gstPct / 100);
+      const grandTotal = taxable + gstAmt;
+
+      return { order, subtotal, discPct, discountAmt, gstPct, gstAmt, grandTotal };
+    }
+
+    function renderCart() {
+      document.getElementById("activeTableHeading").textContent = `Current Bill: ${selectedTable}`;
+      const tbody = document.getElementById("cartTableBody");
+      const calc = getCartCalculations();
+      tbody.innerHTML = "";
+
+      if (calc.order.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b; padding:18px;">No items added for ${selectedTable}. Tap dishes on the left!</td></tr>`;
+      } else {
+        calc.order.forEach(item => {
+          const lineTotal = item.price * item.qty;
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${item.name}</strong><br><small style="color:#64748b;">₹${item.price}</small></td>
+              <td>
+                <div class="qty-box">
+                  <button type="button" class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                  <span><strong>${item.qty}</strong></span>
+                  <button type="button" class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                </div>
+              </td>
+              <td><strong>₹${lineTotal.toFixed(2)}</strong></td>
+              <td><button type="button" class="del-btn" onclick="removeCartItem(${item.id})">×</button></td>
+            </tr>
+          `;
+        });
+      }
+
+      document.getElementById("lblSubtotal").textContent = `₹${calc.subtotal.toFixed(2)}`;
+      document.getElementById("lblDiscount").textContent = `- ₹${calc.discountAmt.toFixed(2)}`;
+      document.getElementById("lblGst").textContent = `₹${calc.gstAmt.toFixed(2)}`;
+      document.getElementById("lblGrandTotal").textContent = `₹${calc.grandTotal.toFixed(2)}`;
+    }
+
+    function buildReceiptHtml(bill) {
+      let rows = "";
+      bill.items.forEach(item => {
+        rows += `
+          <div class="r-row">
+            <span>${item.name} x${item.qty}</span>
+            <span>₹${(item.price * item.qty).toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      return `
+        <div class="receipt-paper">
+          <div class="r-center">
+            <strong>SAFFRON & EMBER BISTRO</strong><br>
+            <small>(DEMO POS RECEIPT - NOT VALID)</small><br>
+            <small>MG Road, Demo City • +91 90000 11111</small>
+          </div>
+          <div class="r-line"></div>
+          <div class="r-row"><span>Bill: <strong>${bill.billNo}</strong></span><span>${bill.table}</span></div>
+          <div class="r-row"><span>Date: ${bill.dateTime}</span><span>${bill.payMode}</span></div>
+          <div class="r-row"><span>Guest: ${bill.customer}</span></div>
+          <div class="r-line"></div>
+          ${rows}
+          <div class="r-line"></div>
+          <div class="r-row"><span>Subtotal</span><span>₹${bill.subtotal.toFixed(2)}</span></div>
+          <div class="r-row"><span>Discount</span><span>- ₹${bill.discountAmt.toFixed(2)}</span></div>
+          <div class="r-row"><span>GST (${bill.gstPct}%)</span><span>₹${bill.gstAmt.toFixed(2)}</span></div>
+          <div class="r-line"></div>
+          <div class="r-row" style="font-size:15px;"><strong>GRAND TOTAL</strong><strong>₹${bill.grandTotal.toFixed(2)}</strong></div>
+          <div class="r-line"></div>
+          <div class="r-center"><small>Thank you for visiting! Built by Kadam Digital Studio</small></div>
+        </div>
+      `;
+    }
+
+    function finalizeBill() {
+      const calc = getCartCalculations();
+      if (calc.order.length === 0) {
+        alert(`Please add items to ${selectedTable} first.`);
+        return;
+      }
+
+      const custName = document.getElementById("custName").value.trim() || "Walk-in Guest";
+      const payMode = document.getElementById("payMode").value;
+      const now = new Date();
+      const dateTime = `${now.toLocaleDateString("en-IN")}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      const billNo = `RES-${posDb.nextBillNo}`;
+
+      const record = {
+        billNo,
+        dateTime,
+        table: selectedTable,
+        customer: custName,
+        payMode,
+        subtotal: calc.subtotal,
+        discountAmt: calc.discountAmt,
+        gstPct: calc.gstPct,
+        gstAmt: calc.gstAmt,
+        grandTotal: calc.grandTotal,
+        items: JSON.parse(JSON.stringify(calc.order))
+      };
+
+      posDb.history.unshift(record);
+      posDb.nextBillNo += 1;
+      posDb.activeOrders[selectedTable] = [];
+      document.getElementById("custName").value = "";
+      document.getElementById("custPhone").value = "";
+      document.getElementById("discountPct").value = "0";
+
+      savePosState();
+      renderTablePills();
+      renderCart();
+      openReceiptModal(record);
+    }
+
+    function previewCurrentReceipt() {
+      const calc = getCartCalculations();
+      if (calc.order.length === 0) {
+        alert(`No items in ${selectedTable} to preview.`);
+        return;
+      }
+      const previewBill = {
+        billNo: `DRAFT-${selectedTable.replace(/\s+/g, '')}`,
+        dateTime: new Date().toLocaleDateString("en-IN"),
+        table: selectedTable,
+        customer: document.getElementById("custName").value.trim() || "Walk-in Guest",
+        payMode: document.getElementById("payMode").value,
+        subtotal: calc.subtotal,
+        discountAmt: calc.discountAmt,
+        gstPct: calc.gstPct,
+        gstAmt: calc.gstAmt,
+        grandTotal: calc.grandTotal,
+        items: calc.order
+      };
+      openReceiptModal(previewBill);
+    }
+
+    function openReceiptModal(billObj) {
+      const html = buildReceiptHtml(billObj);
+      document.getElementById("modalReceiptContent").innerHTML = html;
+      document.getElementById("printable-receipt").innerHTML = html;
+      document.getElementById("receiptModal").style.display = "flex";
+    }
+
+    function closeReceiptModal() {
+      document.getElementById("receiptModal").style.display = "none";
+    }
+
+    function printPreparedReceipt() {
+      window.print();
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById("posHistoryBody");
+      tbody.innerHTML = "";
+
+      let totalSales = 0, digitalSales = 0, cashSales = 0;
+      posDb.history.forEach((h, idx) => {
+        totalSales += h.grandTotal;
+        if (h.payMode === "Cash") cashSales += h.grandTotal;
+        else digitalSales += h.grandTotal;
+
+        const itemCount = h.items.reduce((sum, i) => sum + i.qty, 0);
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${h.billNo}</strong></td>
+            <td>${h.dateTime}</td>
+            <td>${h.table}</td>
+            <td>${h.customer}</td>
+            <td>${itemCount} items</td>
+            <td><strong>${h.payMode}</strong></td>
+            <td><strong>₹${h.grandTotal.toFixed(2)}</strong></td>
+            <td>
+              <button type="button" class="btn-blue" style="padding:5px 10px; border:none; border-radius:4px; cursor:pointer; font-size:0.8rem;" onclick="viewHistoryBill(${idx})">👁️ View / Print</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      if (posDb.history.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:16px; color:#64748b;">No finalized restaurant bills yet.</td></tr>`;
+      }
+
+      document.getElementById("statTotalSales").textContent = `₹${totalSales.toFixed(2)}`;
+      document.getElementById("statTotalBills").textContent = posDb.history.length;
+      document.getElementById("statDigitalSales").textContent = `₹${digitalSales.toFixed(2)}`;
+      document.getElementById("statCashSales").textContent = `₹${cashSales.toFixed(2)}`;
+    }
+
+    function viewHistoryBill(index) {
+      const bill = posDb.history[index];
+      if (!bill) return;
+      openReceiptModal(bill);
+    }
+
+    function renderAll() {
+      renderTablePills();
+      renderMenuGrid();
+      renderCart();
+      renderHistory();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>

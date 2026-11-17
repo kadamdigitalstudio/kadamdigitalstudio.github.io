@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshMart Grocery Billing (Demo) | Kadam Digital Studio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.5;
+      padding-bottom: 70px;
+    }
+
+    .demo-bar {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 10px 18px;
+      font-size: 0.86rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .demo-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .demo-actions a, .demo-actions button {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-blue { background: #2563eb; color: #fff; }
+    .btn-slate { background: #475569; color: #fff; }
+
+    .wrap {
+      max-width: 1280px;
+      margin: 16px auto;
+      padding: 0 14px;
+    }
+
+    .top-bar {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand h1 { font-size: 1.25rem; color: #15803d; }
+    .brand p { font-size: 0.82rem; color: #64748b; }
+
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 9px 15px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #15803d;
+      color: #ffffff;
+      border-color: #15803d;
+    }
+
+    .pos-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .panel-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+    .search-input:focus { outline: none; border-color: #16a34a; }
+
+    .cat-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .cat-btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .cat-btn.active {
+      background: #15803d;
+      color: #fff;
+      border-color: #15803d;
+    }
+
+    /* Quick Custom Item Row */
+    .custom-bar {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: 1.6fr 0.8fr 0.7fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .custom-bar input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.86rem;
+    }
+    .btn-add-custom {
+      padding: 8px 12px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 10px;
+    }
+
+    .item-card {
+      text-align: left;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 11px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 86px;
+      transition: 0.15s;
+    }
+    .item-card:hover { border-color: #16a34a; background: #f0fdf4; }
+    .item-name { font-weight: 700; font-size: 0.88rem; color: #0f172a; margin-bottom: 4px; }
+    .item-unit { font-size: 0.76rem; color: #64748b; }
+    .item-price { font-weight: 800; color: #15803d; font-size: 0.94rem; margin-top: 6px; }
+
+    /* Cart Panel */
+    .cust-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .cust-grid input, .pay-grid input, .pay-grid select {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.88rem;
+    }
+
+    .cart-wrap {
+      max-height: 270px;
+      overflow-y: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    table.cart-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    table.cart-tbl th, table.cart-tbl td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    table.cart-tbl th {
+      background: #f8fafc;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #475569;
+    }
+
+    .qty-ctrl {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .q-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 4px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .q-input {
+      width: 48px;
+      text-align: center;
+      padding: 4px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.84rem;
+    }
+    .rm-btn {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .pay-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .pay-grid label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 3px;
+    }
+
+    .summary-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+    .sum-grand {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1.5px dashed #cbd5e1;
+      margin-top: 6px;
+      padding-top: 6px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .act-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-act {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .btn-green { background: #16a34a; color: #fff; }
+    .btn-dark { background: #0f172a; color: #fff; }
+    .btn-red { background: #fee2e2; color: #b91c1c; }
+
+    /* Stats & History */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .stat-lbl { font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+    .stat-num { font-size: 1.4rem; font-weight: 900; margin-top: 4px; }
+
+    .hist-wrap { overflow-x: auto; }
+    table.hist-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+    table.hist-tbl th, table.hist-tbl td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      white-space: nowrap;
+    }
+    table.hist-tbl th {
+      background: #1e293b;
+      color: #fff;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+    }
+
+    .badge-paid {
+      background: #dcfce7;
+      color: #166534;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .badge-udhaar {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    /* Mobile Floating Bill Bar */
+    .mobile-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 16px;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 90;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    }
+    .mobile-bar a {
+      background: #16a34a;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.86rem;
+    }
+
+    /* Receipt Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 999;
+    }
+    .modal-card {
+      background: #fff;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      padding: 18px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .receipt {
+      border: 1.5px dashed #334155;
+      padding: 14px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      color: #000;
+    }
+    .r-center { text-align: center; }
+    .r-line { border-top: 1px dashed #334155; margin: 7px 0; }
+    .r-row { display: flex; justify-content: space-between; margin: 3px 0; gap: 8px; }
+
+    #printable-receipt { display: none; }
+
+    @media screen and (max-width: 900px) {
+      .pos-layout { grid-template-columns: 1fr; }
+      .custom-bar { grid-template-columns: 1fr 1fr; }
+      .mobile-bar.show-mobile { display: flex; }
+    }
+
+    @media print {
+      body { background: #fff !important; padding: 0 !important; }
+      .demo-bar, .wrap, .mobile-bar, .modal { display: none !important; }
+      #printable-receipt { display: block !important; max-width: 340px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <span><strong>Grocery Store Billing Demo (PC & Mobile)</strong> • Kadam Digital Studio</span>
+    <div class="demo-actions">
+      <button type="button" class="btn-slate" onclick="resetGroceryDemo()">🔄 Reset Demo</button>
+      <a href="index.html" class="btn-blue">← Back to Kadam Digital Studio</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="top-bar">
+      <div class="brand">
+        <h1>FreshMart Kirana & Grocery POS (Demo)</h1>
+        <p>Fast weight/unit billing, UPI/Cash/Udhaar tracking & printable bills on PC or Mobile.</p>
+      </div>
+      <div class="tabs">
+        <button type="button" class="tab-btn active" id="tabBillBtn" onclick="switchTab('bill')">🛒 Billing Screen</button>
+        <button type="button" class="tab-btn" id="tabHistBtn" onclick="switchTab('history')">📜 Bills & Udhaar Khata</button>
+      </div>
+    </div>
+
+    <!-- BILLING SCREEN -->
+    <div id="billSection" class="pos-layout">
+      <!-- Left: Search & Items -->
+      <div class="panel">
+        <div class="panel-title">1. Search or Tap Grocery Items</div>
+        <input type="text" id="searchBox" class="search-input" placeholder="Search item (e.g. Rice, Oil, Milk, Sugar)..." oninput="renderCatalog()" />
+
+        <div class="cat-row">
+          <button type="button" class="cat-btn active" onclick="setCat('all', this)">All</button>
+          <button type="button" class="cat-btn" onclick="setCat('grains', this)">Grains & Oil</button>
+          <button type="button" class="cat-btn" onclick="setCat('daily', this)">Dairy & Fresh</button>
+          <button type="button" class="cat-btn" onclick="setCat('snacks', this)">Tea & Snacks</button>
+        </div>
+
+        <!-- Custom Loose Item Adder -->
+        <div class="custom-bar">
+          <input type="text" id="customName" placeholder="Custom Item (e.g. Loose Dal)" />
+          <input type="number" id="customRate" placeholder="Rate ₹" min="0" step="0.5" />
+          <input type="number" id="customQty" placeholder="Qty" value="1" min="0.1" step="0.5" />
+          <button type="button" class="btn-add-custom" onclick="addCustomItem()">+ Add</button>
+        </div>
+
+        <div class="item-grid" id="itemGrid"></div>
+      </div>
+
+      <!-- Right: Active Bill -->
+      <div class="panel" id="cartPanel">
+        <div class="panel-title">2. Customer Bill</div>
+
+        <div class="cust-grid">
+          <input type="text" id="gCustName" placeholder="Customer Name (Required for Udhaar)" />
+          <input type="tel" id="gCustPhone" placeholder="WhatsApp / Phone (Optional)" />
+        </div>
+
+        <div class="cart-wrap">
+          <table class="cart-tbl">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty / Wt</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cartBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pay-grid">
+          <div>
+            <label for="gDiscount">Flat Discount (₹)</label>
+            <input type="number" id="gDiscount" value="0" min="0" step="1" oninput="renderCart()" />
+          </div>
+          <div>
+            <label for="gPayMode">Payment Type</label>
+            <select id="gPayMode">
+              <option value="UPI">UPI / QR (Paid)</option>
+              <option value="Cash">Cash (Paid)</option>
+              <option value="Card">Card (Paid)</option>
+              <option value="Udhaar">Udhaar / Credit (Pending)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="summary-box">
+          <div class="sum-row"><span>Items Subtotal</span><span id="lblSub">₹0.00</span></div>
+          <div class="sum-row"><span>Discount</span><span id="lblDisc">- ₹0.00</span></div>
+          <div class="sum-grand"><span>NET PAYABLE</span><span id="lblNet">₹0.00</span></div>
+        </div>
+
+        <div class="act-grid">
+          <button type="button" class="btn-act btn-green" onclick="finalizeBill()">✅ Save & Print Bill</button>
+          <button type="button" class="btn-act btn-dark" onclick="previewBill()">👁️ Preview Slip</button>
+        </div>
+        <button type="button" class="btn-act btn-red" style="width:100%; margin-top:8px;" onclick="clearCart()">Clear Current Bill</button>
+      </div>
+    </div>
+
+    <!-- HISTORY & UDHAAR TAB -->
+    <div id="histSection" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">Total Billing</div>
+          <div class="stat-num" id="stTotal">₹0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Paid Collected (Cash/UPI)</div>
+          <div class="stat-num" style="color:#15803d;" id="stPaid">₹0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Pending Udhaar (Credit)</div>
+          <div class="stat-num" style="color:#b45309;" id="stUdhaar">₹0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Total Bills</div>
+          <div class="stat-num" id="stCount">0</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Saved Bills & Credit (Udhaar) Register</div>
+        <div class="hist-wrap">
+          <table class="hist-tbl">
+            <thead>
+              <tr>
+                <th>Bill No</th>
+                <th>Date & Time</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Mode</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="histBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Quick Jump Bar -->
+  <div class="mobile-bar show-mobile" id="mobileCartBar">
+    <div>
+      <strong id="mobTotalTxt">₹0.00</strong>
+      <small id="mobCountTxt" style="display:block; color:#cbd5e1; font-size:0.75rem;">0 items in bill</small>
+    </div>
+    <a href="#cartPanel">View Bill ↓</a>
+  </div>
+
+  <!-- Receipt Modal -->
+  <div id="receiptModal" class="modal">
+    <div class="modal-card">
+      <div id="modalReceiptBody"></div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button type="button" class="btn-act btn-dark" style="flex:1;" onclick="window.print()">🖨️ Print</button>
+        <button type="button" class="btn-act btn-red" style="flex:1;" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="printable-receipt"></div>
+
+  <script>
+    const GROCERY_KEY = "KDS_DEMO_GROCERY_POS_V1";
+
+    const CATALOG = [
+      { id: 1, name: "Basmati Rice", unit: "1 kg", price: 95, cat: "grains" },
+      { id: 2, name: "Sunflower Oil", unit: "1 Ltr", price: 145, cat: "grains" },
+      { id: 3, name: "Toor Dal", unit: "1 kg", price: 155, cat: "grains" },
+      { id: 4, name: "Wheat Flour (Atta)", unit: "5 kg", price: 220, cat: "grains" },
+      { id: 5, name: "Refined Sugar", unit: "1 kg", price: 46, cat: "grains" },
+      { id: 6, name: "Fresh Milk", unit: "500 ml", price: 30, cat: "daily" },
+      { id: 7, name: "Farm Eggs", unit: "12 pcs", price: 84, cat: "daily" },
+      { id: 8, name: "Amul Butter", unit: "100 g", price: 58, cat: "daily" },
+      { id: 9, name: "Masala Tea", unit: "250 g", price: 115, cat: "snacks" },
+      { id: 10, name: "Cream Biscuits", unit: "1 pkt", price: 25, cat: "snacks" }
+    ];
+
+    let activeCat = "all";
+
+    function createSeedDb() {
+      const today = new Date().toLocaleDateString("en-IN");
+      return {
+        nextBillNo: 503,
+        cart: [
+          { id: 1, name: "Basmati Rice", unit: "1 kg", price: 95, qty: 2 },
+          { id: 6, name: "Fresh Milk", unit: "500 ml", price: 30, qty: 2 }
+        ],
+        history: [
+          {
+            billNo: "GRC-502",
+            dateTime: `${today}, 11:20 AM`,
+            customer: "Sunita Kulkarni (Demo)",
+            phone: "9876500001",
+            payMode: "UPI",
+            status: "Paid",
+            subtotal: 390,
+            discount: 0,
+            netTotal: 390,
+            items: [
+              { name: "Wheat Flour (Atta)", unit: "5 kg", price: 220, qty: 1 },
+              { name: "Sunflower Oil", unit: "1 Ltr", price: 145, qty: 1 },
+              { name: "Cream Biscuits", unit: "1 pkt", price: 25, qty: 1 }
+            ]
+          },
+          {
+            billNo: "GRC-501",
+            dateTime: `${today}, 9:40 AM`,
+            customer: "Rahul Deshmukh (Demo)",
+            phone: "9876500002",
+            payMode: "Udhaar",
+            status: "Pending",
+            subtotal: 270,
+            discount: 5,
+            netTotal: 265,
+            items: [
+              { name: "Toor Dal", unit: "1 kg", price: 155, qty: 1 },
+              { name: "Masala Tea", unit: "250 g", price: 115, qty: 1 }
+            ]
+          }
+        ]
+      };
+    }
+
+    function loadDb() {
+      const raw = localStorage.getItem(GROCERY_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.cart) && Array.isArray(parsed.history)) return parsed;
+        } catch (e) {}
+      }
+      const seed = createSeedDb();
+      localStorage.setItem(GROCERY_KEY, JSON.stringify(seed));
+      return seed;
+    }
+
+    let db = loadDb();
+
+    function saveDb() {
+      localStorage.setItem(GROCERY_KEY, JSON.stringify(db));
+    }
+
+    function resetGroceryDemo() {
+      if (!confirm("Reset grocery billing demo back to sample data?")) return;
+      localStorage.removeItem(GROCERY_KEY);
+      db = loadDb();
+      renderAll();
+    }
+
+    function switchTab(tab) {
+      const isBill = tab === "bill";
+      document.getElementById("billSection").style.display = isBill ? "grid" : "none";
+      document.getElementById("histSection").style.display = isBill ? "none" : "block";
+      document.getElementById("tabBillBtn").className = "tab-btn" + (isBill ? " active" : "");
+      document.getElementById("tabHistBtn").className = "tab-btn" + (!isBill ? " active" : "");
+      document.getElementById("mobileCartBar").className = "mobile-bar" + (isBill ? " show-mobile" : "");
+      if (!isBill) renderHistory();
+    }
+
+    function setCat(cat, btn) {
+      activeCat = cat;
+      document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderCatalog();
+    }
+
+    function renderCatalog() {
+      const q = document.getElementById("searchBox").value.trim().toLowerCase();
+      const grid = document.getElementById("itemGrid");
+      grid.innerHTML = "";
+
+      const list = CATALOG.filter(i => {
+        const matchCat = activeCat === "all" || i.cat === activeCat;
+        const matchSearch = !q || i.name.toLowerCase().includes(q);
+        return matchCat && matchSearch;
+      });
+
+      if (list.length === 0) {
+        grid.innerHTML = `<p style="color:#64748b; font-size:0.88rem; grid-column:1/-1;">No matching items found. Use the green Custom Item bar above!</p>`;
+        return;
+      }
+
+      list.forEach(item => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "item-card";
+        btn.innerHTML = `
+          <div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-unit">Unit: ${item.unit}</div>
+          </div>
+          <div class="item-price">₹${item.price.toFixed(2)}</div>
+        `;
+        btn.onclick = () => addCatalogItem(item);
+        grid.appendChild(btn);
+      });
+    }
+
+    function addCatalogItem(item) {
+      const existing = db.cart.find(c => c.id === item.id);
+      if (existing) {
+        existing.qty = Math.round((existing.qty + 1) * 100) / 100;
+      } else {
+        db.cart.push({ id: item.id, name: item.name, unit: item.unit, price: item.price, qty: 1 });
+      }
+      saveDb();
+      renderCart();
+    }
+
+    function addCustomItem() {
+      const name = document.getElementById("customName").value.trim();
+      const rate = parseFloat(document.getElementById("customRate").value);
+      const qty = parseFloat(document.getElementById("customQty").value) || 1;
+      if (!name || isNaN(rate) || rate < 0) {
+        alert("Please enter Custom Item name and valid rate.");
+        return;
+      }
+      db.cart.push({ id: Date.now(), name, unit: "custom", price: rate, qty });
+      document.getElementById("customName").value = "";
+      document.getElementById("customRate").value = "";
+      document.getElementById("customQty").value = "1";
+      saveDb();
+      renderCart();
+    }
+
+    function stepQty(idx, delta) {
+      const item = db.cart[idx];
+      if (!item) return;
+      const next = Math.round((item.qty + delta) * 100) / 100;
+      if (next <= 0) db.cart.splice(idx, 1);
+      else item.qty = next;
+      saveDb();
+      renderCart();
+    }
+
+    function setQty(idx, rawVal) {
+      const val = parseFloat(rawVal);
+      if (isNaN(val) || val <= 0) db.cart.splice(idx, 1);
+      else db.cart[idx].qty = Math.round(val * 100) / 100;
+      saveDb();
+      renderCart();
+    }
+
+    function removeItem(idx) {
+      db.cart.splice(idx, 1);
+      saveDb();
+      renderCart();
+    }
+
+    function clearCart() {
+      if (db.cart.length === 0) return;
+      if (!confirm("Clear current grocery bill?")) return;
+      db.cart = [];
+      saveDb();
+      renderCart();
+    }
+
+    function getTotals() {
+      let subtotal = 0;
+      db.cart.forEach(i => subtotal += i.price * i.qty);
+      const disc = Math.max(0, parseFloat(document.getElementById("gDiscount").value) || 0);
+      const net = Math.max(0, subtotal - disc);
+      return { subtotal, disc, net };
+    }
+
+    function renderCart() {
+      const tbody = document.getElementById("cartBody");
+      tbody.innerHTML = "";
+
+      if (db.cart.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:18px; color:#64748b;">Bill is empty. Tap items to add!</td></tr>`;
+      } else {
+        db.cart.forEach((item, idx) => {
+          const lineAmt = item.price * item.qty;
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${item.name}</strong><br><small style="color:#64748b;">₹${item.price} / ${item.unit}</small></td>
+              <td>
+                <div class="qty-ctrl">
+                  <button type="button" class="q-btn" onclick="stepQty(${idx}, -1)">-</button>
+                  <input type="number" class="q-input" value="${item.qty}" step="0.5" min="0.1" onchange="setQty(${idx}, this.value)" />
+                  <button type="button" class="q-btn" onclick="stepQty(${idx}, 1)">+</button>
+                </div>
+              </td>
+              <td><strong>₹${lineAmt.toFixed(2)}</strong></td>
+              <td><button type="button" class="rm-btn" onclick="removeItem(${idx})">×</button></td>
+            </tr>
+          `;
+        });
+      }
+
+      const t = getTotals();
+      document.getElementById("lblSub").textContent = `₹${t.subtotal.toFixed(2)}`;
+      document.getElementById("lblDisc").textContent = `- ₹${t.disc.toFixed(2)}`;
+      document.getElementById("lblNet").textContent = `₹${t.net.toFixed(2)}`;
+
+      document.getElementById("mobTotalTxt").textContent = `₹${t.net.toFixed(2)}`;
+      document.getElementById("mobCountTxt").textContent = `${db.cart.length} line item(s) in bill`;
+    }
+
+    function buildSlipHtml(bill) {
+      let rows = "";
+      bill.items.forEach(i => {
+        rows += `
+          <div class="r-row">
+            <span>${i.name} (${i.qty} x ₹${i.price})</span>
+            <span>₹${(i.price * i.qty).toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      return `
+        <div class="receipt">
+          <div class="r-center">
+            <strong>FRESHMART KIRANA & GROCERY</strong><br>
+            <small>(DEMO BILL SLIP - NOT VALID)</small><br>
+            <small>Demo Market Road • +91 90000 33333</small>
+          </div>
+          <div class="r-line"></div>
+          <div class="r-row"><span>Bill: <strong>${bill.billNo}</strong></span><span>${bill.status.toUpperCase()}</span></div>
+          <div class="r-row"><span>Date: ${bill.dateTime}</span><span>${bill.payMode}</span></div>
+          <div class="r-row"><span>Customer: ${bill.customer}</span></div>
+          <div class="r-line"></div>
+          ${rows}
+          <div class="r-line"></div>
+          <div class="r-row"><span>Subtotal</span><span>₹${bill.subtotal.toFixed(2)}</span></div>
+          <div class="r-row"><span>Discount</span><span>- ₹${bill.discount.toFixed(2)}</span></div>
+          <div class="r-line"></div>
+          <div class="r-row" style="font-size:15px;"><strong>NET TOTAL</strong><strong>₹${bill.netTotal.toFixed(2)}</strong></div>
+          <div class="r-line"></div>
+          <div class="r-center"><small>Thank you! Powered by Kadam Digital Studio</small></div>
+        </div>
+      `;
+    }
+
+    function finalizeBill() {
+      if (db.cart.length === 0) {
+        alert("Please add at least one item to bill.");
+        return;
+      }
+
+      const cust = document.getElementById("gCustName").value.trim();
+      const phone = document.getElementById("gCustPhone").value.trim();
+      const payMode = document.getElementById("gPayMode").value;
+
+      if (payMode === "Udhaar" && !cust) {
+        alert("Please enter Customer Name for an Udhaar (Credit) bill.");
+        document.getElementById("gCustName").focus();
+        return;
+      }
+
+      const t = getTotals();
+      const now = new Date();
+      const dateTime = `${now.toLocaleDateString("en-IN")}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+      const record = {
+        billNo: `GRC-${db.nextBillNo}`,
+        dateTime,
+        customer: cust || "Walk-in Customer",
+        phone: phone || "-",
+        payMode,
+        status: payMode === "Udhaar" ? "Pending" : "Paid",
+        subtotal: t.subtotal,
+        discount: t.disc,
+        netTotal: t.net,
+        items: JSON.parse(JSON.stringify(db.cart))
+      };
+
+      db.history.unshift(record);
+      db.nextBillNo += 1;
+      db.cart = [];
+      document.getElementById("gCustName").value = "";
+      document.getElementById("gCustPhone").value = "";
+      document.getElementById("gDiscount").value = "0";
+
+      saveDb();
+      renderCart();
+      openModal(record);
+    }
+
+    function previewBill() {
+      if (db.cart.length === 0) {
+        alert("Add items to preview slip.");
+        return;
+      }
+      const t = getTotals();
+      const payMode = document.getElementById("gPayMode").value;
+      openModal({
+        billNo: "DRAFT",
+        dateTime: new Date().toLocaleDateString("en-IN"),
+        customer: document.getElementById("gCustName").value.trim() || "Walk-in Customer",
+        payMode,
+        status: payMode === "Udhaar" ? "Pending" : "Paid",
+        subtotal: t.subtotal,
+        discount: t.disc,
+        netTotal: t.net,
+        items: db.cart
+      });
+    }
+
+    function openModal(bill) {
+      const html = buildSlipHtml(bill);
+      document.getElementById("modalReceiptBody").innerHTML = html;
+      document.getElementById("printable-receipt").innerHTML = html;
+      document.getElementById("receiptModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("receiptModal").style.display = "none";
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById("histBody");
+      tbody.innerHTML = "";
+
+      let total = 0, paid = 0, udhaar = 0;
+      db.history.forEach((h, idx) => {
+        total += h.netTotal;
+        if (h.status === "Pending") udhaar += h.netTotal;
+        else paid += h.netTotal;
+
+        const badge = h.status === "Pending"
+          ? `<span class="badge-udhaar">Pending Udhaar</span>`
+          : `<span class="badge-paid">Paid</span>`;
+
+        const settleBtn = h.status === "Pending"
+          ? `<button type="button" class="btn-green" style="padding:4px 8px; border:none; border-radius:4px; color:#fff; cursor:pointer; font-size:0.78rem; margin-left:4px;" onclick="markPaid(${idx})">Mark Paid</button>`
+          : "";
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${h.billNo}</strong></td>
+            <td>${h.dateTime}</td>
+            <td>${h.customer}</td>
+            <td>${h.items.length} items</td>
+            <td>${h.payMode}</td>
+            <td>${badge}</td>
+            <td><strong>₹${h.netTotal.toFixed(2)}</strong></td>
+            <td>
+              <button type="button" class="btn-blue" style="padding:4px 8px; border:none; border-radius:4px; color:#fff; cursor:pointer; font-size:0.78rem;" onclick="openModal(db.history[${idx}])">View / Print</button>
+              ${settleBtn}
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("stTotal").textContent = `₹${total.toFixed(2)}`;
+      document.getElementById("stPaid").textContent = `₹${paid.toFixed(2)}`;
+      document.getElementById("stUdhaar").textContent = `₹${udhaar.toFixed(2)}`;
+      document.getElementById("stCount").textContent = db.history.length;
+    }
+
+    function markPaid(idx) {
+      db.history[idx].status = "Paid";
+      db.history[idx].payMode = "Settled (Cash/UPI)";
+      saveDb();
+      renderHistory();
+    }
+
+    function renderAll() {
+      renderCatalog();
+      renderCart();
+      renderHistory();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>

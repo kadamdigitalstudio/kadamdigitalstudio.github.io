@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetroFast Cargo Demo - Billing Suite | Kadam Digital Studio</title>
+    <!-- DYNAMIC USER-CHOICE PRINT ORIENTATION INJECTOR -->
+    <style id="printOrientationStyle">
+        @page { size: A4 portrait; margin: 6mm 5mm 6mm 5mm; }
+    </style>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --border-color: #000;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 15px;
+        }
+
+        /* DEMO NOTICE BANNER (HIDDEN IN PRINT) */
+        .demo-banner {
+            max-width: 1350px;
+            margin: 0 auto 12px auto;
+            background: #eff6ff;
+            border: 1.5px solid #93c5fd;
+            color: #1e3a8a;
+            padding: 10px 16px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .demo-banner-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* SCREEN WORKSPACE */
+        .screen-container {
+            max-width: 1350px;
+            margin: 0 auto 30px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-header {
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            background: #334155;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+        }
+
+        .tab-btn:hover { background: #475569; }
+        .tab-btn.active-tab { background: var(--accent); }
+
+        h2.section-title {
+            font-size: 13.5px;
+            background: #e2e8f0;
+            padding: 6px 12px;
+            margin: 15px 0 10px 0;
+            border-left: 4px solid var(--accent);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .grid-row { display: grid; gap: 10px; margin-bottom: 10px; }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+        .entry-grid-del-1 { display: grid; grid-template-columns: 130px 1.2fr 1fr 1.2fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .entry-grid-del-2 { display: grid; grid-template-columns: 0.6fr 0.8fr 1.1fr 1fr 1.5fr 120px; gap: 10px; align-items: flex-end; }
+        .entry-grid-cl { display: grid; grid-template-columns: 130px 1.2fr 1fr 1fr 0.8fr 1fr 1.2fr 130px; gap: 10px; align-items: flex-end; }
+        .entry-grid-pf-1 { display: grid; grid-template-columns: 125px 1.1fr 1fr 1.1fr 1.1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .entry-grid-pf-2 { display: grid; grid-template-columns: 0.7fr 0.9fr 1.1fr 1.1fr 1.1fr 130px; gap: 8px; align-items: flex-end; }
+
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group select {
+            height: 36px;
+            padding: 6px 10px;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            background: #fff;
+            width: 100%;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 4px rgba(2, 132, 199, 0.3);
+        }
+
+        .entry-panel {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .scrollable-table-wrap {
+            max-height: 380px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .scrollable-table-wrap table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .scrollable-table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+        .scrollable-table-wrap::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+
+        table.entry-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        table.entry-table th,
+        table.entry-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        table.entry-table th {
+            background-color: #1e293b;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        table.entry-table tbody tr:nth-child(even) { background-color: #f8fafc; }
+
+        .rate-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .rate-card h4 {
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: var(--primary);
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 3px;
+        }
+
+        button.btn, a.btn-link {
+            cursor: pointer;
+            border: none;
+            padding: 6px 12px;
+            font-weight: bold;
+            font-size: 12px;
+            border-radius: 4px;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #15803d; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-warning:hover { background: #b45309; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-print { background: var(--primary); color: white; padding: 8px 18px; font-size: 13.5px; }
+        .btn-print:hover { background: #1e293b; }
+
+        /* USER-CHOICE PRINT BAR STYLING */
+        .print-choice-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 6px;
+            flex-wrap: wrap;
+        }
+
+        .orientation-label {
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: #1e293b;
+        }
+
+        .history-action-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 92%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        /* PRINTABLE INVOICE BILL */
+        #printable-bill {
+            background: #fff;
+            margin: 25px auto 40px auto;
+            border: 1.5px solid var(--border-color);
+            padding: 16px 20px;
+            color: #000;
+            transition: max-width 0.2s ease;
+            overflow-x: auto;
+        }
+
+        #printable-bill.user-portrait { max-width: 980px; }
+        #printable-bill.user-landscape { max-width: 1320px; }
+
+        .bill-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+        }
+
+        .shree-tag {
+            font-weight: 900;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+            color: #b91c1c;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .company-subtitle {
+            font-size: 12.5px;
+            font-weight: bold;
+            margin: 2px 0;
+        }
+
+        .company-contacts {
+            font-size: 11.5px;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .bill-title-bar {
+            text-align: center;
+            background: #f1f5f9;
+            border: 1.5px solid #000;
+            font-size: 13.5px;
+            font-weight: 900;
+            padding: 5px;
+            margin-bottom: 4px;
+            letter-spacing: 1.5px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .route-banner-print {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 900;
+            background: #e2e8f0;
+            border: 1px solid #000;
+            padding: 3px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .bill-meta-box {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            border: 1.5px solid #000;
+            margin-bottom: 8px;
+            font-size: 12.5px;
+        }
+
+        .meta-col { padding: 6px 10px; }
+        .meta-col:first-child { border-right: 1.5px solid #000; }
+        .meta-row { display: flex; margin-bottom: 3px; }
+        .meta-row .lbl { font-weight: 800; min-width: 120px; color: #111; }
+
+        table.print-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            table-layout: auto;
+        }
+
+        table.print-table thead { display: table-header-group; }
+        table.print-table tr { page-break-inside: avoid; }
+
+        table.print-table th,
+        table.print-table td {
+            border: 1.5px solid #000;
+            padding: 5px 6px;
+            height: 28px;
+            line-height: 1.25;
+            vertical-align: middle;
+            color: #000;
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+        }
+
+        table.print-table th {
+            background-color: #f1f5f9 !important;
+            text-align: center;
+            font-weight: 900;
+            font-size: 12px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        table.print-table td.center { text-align: center; }
+        table.print-table td.right { text-align: right; }
+
+        tr.final-grand-total-row {
+            page-break-inside: avoid !important;
+            page-break-before: auto;
+        }
+
+        tr.final-grand-total-row td {
+            font-weight: 900 !important;
+            font-size: 13px !important;
+            background: #f8fafc !important;
+            border-top: 2px solid #000 !important;
+            border-bottom: 2px solid #000 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+        }
+
+        .bill-footer {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            border: 1.5px solid #000;
+            padding: 8px 14px;
+            font-size: 12px;
+            page-break-inside: avoid;
+        }
+
+        .sign-box {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 70px;
+            font-size: 12px;
+        }
+
+        /* RESPONSIVE SCREEN SUPPORT (DOES NOT AFFECT PRINT) */
+        @media screen and (max-width: 960px) {
+            .grid-5, .grid-4, .grid-3,
+            .entry-grid-del-1, .entry-grid-del-2,
+            .entry-grid-cl,
+            .entry-grid-pf-1, .entry-grid-pf-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media screen and (max-width: 560px) {
+            body { padding: 8px; }
+            .screen-container { padding: 12px; }
+            .grid-5, .grid-4, .grid-3, .grid-2,
+            .entry-grid-del-1, .entry-grid-del-2,
+            .entry-grid-cl,
+            .entry-grid-pf-1, .entry-grid-pf-2,
+            .bill-meta-box, .bill-footer {
+                grid-template-columns: 1fr;
+            }
+            .meta-col:first-child {
+                border-right: none;
+                border-bottom: 1.5px solid #000;
+            }
+        }
+
+        /* STRICT CLEAN PRINT RULES */
+        @media print {
+            html, body {
+                background: #fff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .demo-banner, .screen-container, .modal {
+                display: none !important;
+            }
+            #printable-bill {
+                display: block !important;
+                border: 1.5px solid #000 !important;
+                margin: 0 !important;
+                padding: 6px 10px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow: visible !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DEMO NOTICE BAR -->
+    <div class="demo-banner">
+        <div>
+            <strong>Interactive Portfolio Demo by Kadam Digital Studio</strong> — Pre-loaded with sample data. Changes save locally in your own browser only.
+        </div>
+        <div class="demo-banner-actions">
+            <button type="button" class="btn btn-warning" onclick="resetDemoData()">🔄 Reset Sample Data</button>
+            <a href="index.html" class="btn-link btn-primary">← Back to Kadam Digital Studio</a>
+        </div>
+    </div>
+
+    <!-- AUTOCOMPLETE DATALISTS -->
+    <datalist id="receiverList"></datalist>
+    <datalist id="consignorList"></datalist>
+    <datalist id="destinationList"></datalist>
+
+    <!-- SCREEN WORKSPACE -->
+    <div class="screen-container">
+        
+        <!-- TOP NAVIGATION -->
+        <div class="nav-header">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="font-weight: bold; font-size: 13px;">Active Courier:</span>
+                <select id="courierSelect" onchange="onCourierChange()" style="padding: 6px; border-radius: 4px; font-weight: bold; min-width: 200px;"></select>
+                <button type="button" class="btn btn-primary" onclick="createNewCourier()">+ Add Courier</button>
+                <button type="button" class="btn btn-danger" onclick="deleteActiveCourier()" title="Delete Active Courier" style="padding: 6px 10px;">🗑️ Delete</button>
+            </div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button type="button" class="tab-btn active-tab" id="tabDeliveryBtn" onclick="switchMainTab('delivery')">🚚 Delivery Billing</button>
+                <button type="button" class="tab-btn" id="tabColoadBtn" onclick="switchMainTab('coload')">📦 Co-Loading Billing</button>
+                <button type="button" class="tab-btn" id="tabPickupBtn" onclick="switchMainTab('pickup')">🏢 Pickup & Forwarding</button>
+                <button type="button" class="tab-btn" id="tabHistoryBtn" onclick="switchMainTab('history')">📜 Bills History</button>
+            </div>
+        </div>
+
+        <!-- SHARED BILL METADATA HEADER -->
+        <h2 class="section-title">1. Current Bill Info (Automatic Master Sequence)</h2>
+        <div class="grid-row grid-4">
+            <div class="form-group">
+                <label>Bill No (Automatic Global Sequence):</label>
+                <input type="text" id="billNo" readonly style="background: #e2e8f0; font-weight: bold; color: var(--primary);">
+            </div>
+            <div class="form-group">
+                <label>Bill Date:</label>
+                <input type="date" id="billDate" onchange="saveCourierDetails()">
+            </div>
+            <div class="form-group">
+                <label>Courier / Party Name:</label>
+                <input type="text" id="partyName" oninput="saveCourierDetails()">
+            </div>
+            <div class="form-group">
+                <label>Billing Duration (From - To):</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="date" id="dateFrom" onchange="saveCourierDetails()">
+                    <input type="date" id="dateTo" onchange="saveCourierDetails()">
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 1: DELIVERY -->
+        <div id="sectionDelivery">
+            <h2 class="section-title">2. Delivery Rate Card (Base ≤ 10kg & Addl./kg > 10kg)</h2>
+            <div class="grid-row grid-5">
+                <div class="rate-card">
+                    <h4>LOCAL Delivery</h4>
+                    <div class="grid-row grid-2">
+                        <div class="form-group"><label>Base (≤ 10k):</label><input type="number" id="rateLocalBase" value="50" oninput="updateDeliveryRates()"></div>
+                        <div class="form-group"><label>Addl/Kg:</label><input type="number" id="rateLocalExtra" value="5" oninput="updateDeliveryRates()"></div>
+                    </div>
+                </div>
+                <div class="rate-card">
+                    <h4>ODA Delivery</h4>
+                    <div class="grid-row grid-2">
+                        <div class="form-group"><label>Base (≤ 10k):</label><input type="number" id="rateOdaBase" value="120" oninput="updateDeliveryRates()"></div>
+                        <div class="form-group"><label>Addl/Kg:</label><input type="number" id="rateOdaExtra" value="8" oninput="updateDeliveryRates()"></div>
+                    </div>
+                </div>
+                <div class="rate-card">
+                    <h4>SPECIAL Delivery</h4>
+                    <div class="grid-row grid-2">
+                        <div class="form-group"><label>Base (≤ 10k):</label><input type="number" id="rateSpecBase" value="200" oninput="updateDeliveryRates()"></div>
+                        <div class="form-group"><label>Addl/Kg:</label><input type="number" id="rateSpecExtra" value="12" oninput="updateDeliveryRates()"></div>
+                    </div>
+                </div>
+                <div class="rate-card">
+                    <h4>ODD AREA Delivery</h4>
+                    <div class="grid-row grid-2">
+                        <div class="form-group"><label>Base (≤ 10k):</label><input type="number" id="rateOddBase" value="150" oninput="updateDeliveryRates()"></div>
+                        <div class="form-group"><label>Addl/Kg:</label><input type="number" id="rateOddExtra" value="10" oninput="updateDeliveryRates()"></div>
+                    </div>
+                </div>
+                <div class="rate-card">
+                    <h4>REMOTE AREA</h4>
+                    <div class="grid-row grid-2">
+                        <div class="form-group"><label>Base (≤ 10k):</label><input type="number" id="rateRemoteBase" value="250" oninput="updateDeliveryRates()"></div>
+                        <div class="form-group"><label>Addl/Kg:</label><input type="number" id="rateRemoteExtra" value="15" oninput="updateDeliveryRates()"></div>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 11px; color: #64748b; margin-top: -5px;">* Note: <b>OFFICE HOLD</b> delivery type rate is permanently fixed at <b>₹ 0.00</b>.</p>
+
+            <h2 class="section-title">3. Enter Delivery Docket / LR Details</h2>
+            <div class="entry-panel">
+                <div class="entry-grid-del-1">
+                    <div class="form-group"><label>Date:</label><input type="date" id="dktDate"></div>
+                    <div class="form-group"><label>LR / DKTS No:</label><input type="text" id="lrNo" placeholder="LR No"></div>
+                    <div class="form-group"><label>Origin:</label><input type="text" id="origin" placeholder="Origin"></div>
+                    <div class="form-group"><label>Receiver (Consignee):</label><input type="text" id="receiver" list="receiverList" placeholder="Receiver" oninput="onReceiverSelected(this.value, 'destination')"></div>
+                    <div class="form-group"><label>Destination:</label><input type="text" id="destination" list="destinationList" placeholder="Destination"></div>
+                </div>
+                <div class="entry-grid-del-2">
+                    <div class="form-group"><label>Boxes:</label><input type="number" id="boxes" min="1" value="1"></div>
+                    <div class="form-group"><label>Weight (Kg):</label><input type="number" step="0.01" id="weight" min="0" placeholder="0.00" oninput="onDelWeightOrTypeChange()"></div>
+                    <div class="form-group"><label>Delivery Type:</label>
+                        <select id="delType" onchange="onDelWeightOrTypeChange()">
+                            <option value="LOCAL">LOCAL</option>
+                            <option value="ODA">ODA</option>
+                            <option value="SPECIAL">SPECIAL</option>
+                            <option value="ODD AREA">ODD AREA</option>
+                            <option value="REMOTE AREA">REMOTE AREA</option>
+                            <option value="OFFICE HOLD">OFFICE HOLD</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Amount (₹):</label><input type="number" step="0.01" id="dktAmount" placeholder="Amount" style="font-weight: bold;"></div>
+                    <div class="form-group"><label>Remark (Optional):</label><input type="text" id="dktRemark" placeholder="e.g. Paid, Delay, Door delivery"></div>
+                    <div><button type="button" class="btn btn-success" style="height: 36px; width: 100%;" onclick="addDeliveryDocket()">+ Add Docket</button></div>
+                </div>
+            </div>
+
+            <div class="scrollable-table-wrap">
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Date</th><th>LR / Dkt No</th><th>Origin</th><th>Receiver</th><th>Destination</th><th>Type</th><th>Boxes</th><th>Weight</th><th>Amount (₹)</th><th>Remark</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="screenDeliveryTableBody"></tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-warning" onclick="finalizeAndArchiveBill('DELIVERY')">✅ Finalize & Archive Delivery</button>
+                    <button type="button" class="btn btn-danger" onclick="clearActiveRows('DELIVERY')">Clear Unsaved</button>
+                </div>
+                
+                <div class="print-choice-bar">
+                    <label class="orientation-label" style="margin-right: 6px; color: var(--accent);">
+                        <input type="checkbox" id="printDeliveryRemarkCheck" checked onchange="renderPrintView()"> <b>Include Remark in Print</b>
+                    </label>
+                    <span style="font-size: 11.5px; font-weight: bold; color: #475569;">Format:</span>
+                    <label class="orientation-label">
+                        <input type="radio" name="orientDelivery" value="portrait" checked onchange="setUserOrientation('portrait')"> 📄 Portrait
+                    </label>
+                    <label class="orientation-label">
+                        <input type="radio" name="orientDelivery" value="landscape" onchange="setUserOrientation('landscape')"> 📜 Landscape
+                    </label>
+                    <button type="button" class="btn btn-print" onclick="printBill('delivery')">🖨️ Print Delivery Bill</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: CO-LOADING -->
+        <div id="sectionCoload" style="display: none;">
+            <h2 class="section-title">2. Co-Loading Rate Settings</h2>
+            <div class="grid-row grid-3">
+                <div class="rate-card">
+                    <h4>Base / Fixed Docket Rate</h4>
+                    <div class="form-group"><label>Base Rate Per Docket (₹):</label><input type="number" step="0.01" id="coloadFixedRate" value="30.00" oninput="updateColoadRates()"></div>
+                </div>
+                <div class="rate-card">
+                    <h4>Rate Per Kg Calculation Mode</h4>
+                    <div class="form-group"><label>Option:</label>
+                        <select id="coloadKgMode" onchange="updateColoadRates()">
+                            <option value="EVERY_KG">Every Kg (All Weight)</option>
+                            <option value="ABOVE_10KG">Above 10 Kg Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="rate-card">
+                    <h4>Rate Per Kg</h4>
+                    <div class="form-group"><label>Rate Per Kg (₹):</label><input type="number" step="0.01" id="coloadRatePerKg" value="6.50" oninput="updateColoadRates()"></div>
+                </div>
+            </div>
+
+            <div class="rate-card" style="background: #eef2ff; border-color: #c7d2fe; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 13px; font-weight: bold; color: #3730a3;">🛣️ Route-Wise Distribution:</span>
+                        <select id="coloadRouteFilter" onchange="onColoadRouteChange()" style="height: 34px; padding: 4px 8px; font-weight: bold; min-width: 240px;">
+                            <option value="ALL">ALL ROUTES (Full Co-Loading Bill)</option>
+                        </select>
+                    </div>
+                    <span style="font-size: 11.5px; color: #4338ca;">* Filter by Route to generate/print route-specific distribution invoices</span>
+                </div>
+            </div>
+
+            <h2 class="section-title">3. Enter Co-Loading Docket / Manifest Details</h2>
+            <div class="entry-panel">
+                <div class="entry-grid-cl">
+                    <div class="form-group"><label>Date:</label><input type="date" id="clDate"></div>
+                    <div class="form-group"><label>Manifest/Dkt No:</label><input type="text" id="clManifestNo" placeholder="Manifest No"></div>
+                    <div class="form-group"><label>Origin:</label><input type="text" id="clOrigin" placeholder="Origin"></div>
+                    <div class="form-group"><label>Destination:</label><input type="text" id="clDestination" list="destinationList" placeholder="Destination"></div>
+                    <div class="form-group"><label>Boxes:</label><input type="number" id="clBoxes" min="1" value="1"></div>
+                    <div class="form-group"><label>Weight (Kg):</label><input type="number" step="0.01" id="clWeight" min="0" placeholder="0.00" oninput="onColoadWeightChange()"></div>
+                    <div class="form-group"><label>Amount (₹):</label><input type="number" step="0.01" id="clAmount" placeholder="Amount" style="font-weight: bold;"></div>
+                    <div><button type="button" class="btn btn-success" style="height: 36px; width: 100%;" onclick="addColoadDocket()">+ Add Row</button></div>
+                </div>
+            </div>
+
+            <div class="scrollable-table-wrap">
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Date</th><th>Dkt / Manifest No</th><th>Origin</th><th>Destination</th><th>Boxes</th><th>Weight</th><th>Amount (₹)</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="screenColoadTableBody"></tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-warning" onclick="finalizeAndArchiveBill('COLOAD')">✅ Finalize & Archive Co-Loading</button>
+                    <button type="button" class="btn btn-danger" onclick="clearActiveRows('COLOAD')">Clear Unsaved</button>
+                </div>
+
+                <div class="print-choice-bar">
+                    <span style="font-size: 11.5px; font-weight: bold; color: #475569;">Page Format:</span>
+                    <label class="orientation-label">
+                        <input type="radio" name="orientCoload" value="portrait" checked onchange="setUserOrientation('portrait')"> 📄 Portrait
+                    </label>
+                    <label class="orientation-label">
+                        <input type="radio" name="orientCoload" value="landscape" onchange="setUserOrientation('landscape')"> 📜 Landscape
+                    </label>
+                    <button type="button" class="btn btn-print" onclick="printBill('coload')">🖨️ Print Co-Loading Bill</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: PICKUP & FORWARDING -->
+        <div id="sectionPickup" style="display: none;">
+            <h2 class="section-title">2. Pickup & Forwarding Rate Setup</h2>
+            <div class="grid-row grid-2">
+                <div class="rate-card">
+                    <h4>Pickup Rate Configuration</h4>
+                    <div class="grid-row grid-2">
+                        <div class="form-group"><label>Pickup Base (≤ 10 Kg):</label><input type="number" id="ratePkBase" value="60" oninput="updatePickupRates()"></div>
+                        <div class="form-group"><label>Pickup Addl./Kg (> 10 Kg):</label><input type="number" id="ratePkExtra" value="6" oninput="updatePickupRates()"></div>
+                    </div>
+                </div>
+
+                <div class="rate-card">
+                    <h4>Forwarding Rate Configuration</h4>
+                    <div class="grid-row grid-3">
+                        <div class="form-group"><label>Fixed Base Rate (₹):</label><input type="number" step="0.01" id="rateFwdFixed" value="40.00" oninput="updatePickupRates()"></div>
+                        <div class="form-group"><label>Extra Rate Option:</label>
+                            <select id="rateFwdExtraChoice" onchange="updatePickupRates()">
+                                <option value="PER_KG">Add Per Kg (Every Kg)</option>
+                                <option value="ABOVE_10KG">Add Per Kg Above 10 Kg</option>
+                                <option value="NONE">None (Only Fixed Rate)</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Addl. Rate / Kg (₹):</label><input type="number" step="0.01" id="rateFwdPerKgVal" value="10.00" oninput="updatePickupRates()"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">3. Enter Pickup & Forwarding Details</h2>
+            <div class="entry-panel">
+                <div class="entry-grid-pf-1">
+                    <div class="form-group"><label>Date:</label><input type="date" id="pfDate"></div>
+                    <div class="form-group"><label>Docket / LR No:</label><input type="text" id="pfDktNo" placeholder="Dkt No"></div>
+                    <div class="form-group"><label>Origin:</label><input type="text" id="pfOrigin" placeholder="Origin"></div>
+                    <div class="form-group"><label>Consignor (Sender):</label><input type="text" id="pfConsignor" list="consignorList" placeholder="Sender"></div>
+                    <div class="form-group"><label>Consignee (Receiver):</label><input type="text" id="pfConsignee" list="receiverList" placeholder="Receiver"></div>
+                    <div class="form-group"><label>Destination:</label><input type="text" id="pfDestination" list="destinationList" placeholder="Destination"></div>
+                </div>
+                <div class="entry-grid-pf-2">
+                    <div class="form-group"><label>Boxes:</label><input type="number" id="pfBoxes" min="1" value="1"></div>
+                    <div class="form-group"><label>Weight (Kg):</label><input type="number" step="0.01" id="pfWeight" min="0" placeholder="0.00" oninput="onPfWeightChange()"></div>
+                    <div class="form-group"><label>Pickup Amt (₹):</label><input type="number" step="0.01" id="pfPickupAmt" placeholder="Pickup ₹" oninput="updatePfTotalDisplay()"></div>
+                    <div class="form-group"><label>Forwarding Amt (₹):</label><input type="number" step="0.01" id="pfFwdAmt" placeholder="Fwd ₹" oninput="updatePfTotalDisplay()"></div>
+                    <div class="form-group"><label>Total Amt (₹):</label><input type="number" step="0.01" id="pfTotalAmt" readonly style="background: #e2e8f0; font-weight: bold;"></div>
+                    <div><button type="button" class="btn btn-success" style="height: 36px; width: 100%;" onclick="addPickupDocket()">+ Add Entry</button></div>
+                </div>
+            </div>
+
+            <div class="scrollable-table-wrap">
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Date</th><th>Dkt No</th><th>Origin</th><th>Consignor</th><th>Consignee</th><th>Destination</th><th>Box</th><th>Weight</th><th>Pickup (₹)</th><th>Fwd (₹)</th><th>Total (₹)</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="screenPickupTableBody"></tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-warning" onclick="finalizeAndArchiveBill('PICKUP_FWD')">✅ Finalize & Archive Pickup Bill</button>
+                    <button type="button" class="btn btn-danger" onclick="clearActiveRows('PICKUP_FWD')">Clear Unsaved</button>
+                </div>
+
+                <div class="print-choice-bar">
+                    <span style="font-size: 11.5px; font-weight: bold; color: #475569;">Page Format:</span>
+                    <label class="orientation-label">
+                        <input type="radio" name="orientPickup" value="portrait" onchange="setUserOrientation('portrait')"> 📄 Portrait
+                    </label>
+                    <label class="orientation-label">
+                        <input type="radio" name="orientPickup" value="landscape" checked onchange="setUserOrientation('landscape')"> 📜 Landscape (Recommended)
+                    </label>
+                    <button type="button" class="btn btn-print" onclick="printBill('pickup')">🖨️ Print Pickup & Fwd Bill</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: BILLS HISTORY -->
+        <div id="sectionHistory" style="display: none;">
+            <h2 class="section-title">Saved Bills History for Current Courier</h2>
+            <div class="scrollable-table-wrap" style="max-height: 480px;">
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th>Bill Category</th><th>Bill No</th><th>Date</th><th>Duration</th><th>Dkts</th><th>Boxes</th><th>Weight</th><th>Amount (₹)</th><th style="width: 180px; text-align: center; white-space: nowrap;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MODALS -->
+    <div id="editDelModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 12px; color: var(--primary);">Edit Delivery Docket</h3>
+            <input type="hidden" id="editDelId">
+            <div class="grid-row grid-2">
+                <div class="form-group"><label>Date:</label><input type="date" id="editDelDate"></div>
+                <div class="form-group"><label>LR No:</label><input type="text" id="editDelLrNo"></div>
+                <div class="form-group"><label>Origin:</label><input type="text" id="editDelOrigin"></div>
+                <div class="form-group"><label>Receiver:</label><input type="text" id="editDelReceiver" list="receiverList"></div>
+                <div class="form-group"><label>Destination:</label><input type="text" id="editDelDest" list="destinationList"></div>
+                <div class="form-group"><label>Boxes:</label><input type="number" id="editDelBoxes"></div>
+                <div class="form-group"><label>Weight (Kg):</label><input type="number" step="0.01" id="editDelWeight"></div>
+                <div class="form-group"><label>Type:</label>
+                    <select id="editDelType">
+                        <option value="LOCAL">LOCAL</option>
+                        <option value="ODA">ODA</option>
+                        <option value="SPECIAL">SPECIAL</option>
+                        <option value="ODD AREA">ODD AREA</option>
+                        <option value="REMOTE AREA">REMOTE AREA</option>
+                        <option value="OFFICE HOLD">OFFICE HOLD</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Amount (₹):</label><input type="number" step="0.01" id="editDelAmount"></div>
+                <div class="form-group"><label>Remark:</label><input type="text" id="editDelRemark"></div>
+            </div>
+            <div style="margin-top: 15px; text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                <button type="button" class="btn" style="background: #94a3b8; color: white;" onclick="closeModal('editDelModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveDeliveryEdit()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editColoadModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 12px; color: var(--primary);">Edit Co-Loading Docket</h3>
+            <input type="hidden" id="editClId">
+            <div class="grid-row grid-2">
+                <div class="form-group"><label>Date:</label><input type="date" id="editClDate"></div>
+                <div class="form-group"><label>Manifest No:</label><input type="text" id="editClManifest"></div>
+                <div class="form-group"><label>Origin:</label><input type="text" id="editClOrigin"></div>
+                <div class="form-group"><label>Destination:</label><input type="text" id="editClDest" list="destinationList"></div>
+                <div class="form-group"><label>Boxes:</label><input type="number" id="editClBoxes"></div>
+                <div class="form-group"><label>Weight (Kg):</label><input type="number" step="0.01" id="editClWeight"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Amount (₹):</label><input type="number" step="0.01" id="editClAmount"></div>
+            </div>
+            <div style="margin-top: 15px; text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                <button type="button" class="btn" style="background: #94a3b8; color: white;" onclick="closeModal('editColoadModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveColoadEdit()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editPickupModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 12px; color: var(--primary);">Edit Pickup & Forwarding Entry</h3>
+            <input type="hidden" id="editPfId">
+            <div class="grid-row grid-2">
+                <div class="form-group"><label>Date:</label><input type="date" id="editPfDate"></div>
+                <div class="form-group"><label>Docket No:</label><input type="text" id="editPfDktNo"></div>
+                <div class="form-group"><label>Origin:</label><input type="text" id="editPfOrigin"></div>
+                <div class="form-group"><label>Consignor:</label><input type="text" id="editPfConsignor"></div>
+                <div class="form-group"><label>Consignee:</label><input type="text" id="editPfConsignee"></div>
+                <div class="form-group"><label>Destination:</label><input type="text" id="editPfDest" list="destinationList"></div>
+                <div class="form-group"><label>Boxes:</label><input type="number" id="editPfBoxes"></div>
+                <div class="form-group"><label>Weight (Kg):</label><input type="number" step="0.01" id="editPfWeight"></div>
+                <div class="form-group"><label>Pickup Amt (₹):</label><input type="number" step="0.01" id="editPfPickupAmt"></div>
+                <div class="form-group"><label>Forwarding Amt (₹):</label><input type="number" step="0.01" id="editPfFwdAmt"></div>
+            </div>
+            <div style="margin-top: 15px; text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                <button type="button" class="btn" style="background: #94a3b8; color: white;" onclick="closeModal('editPickupModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="savePickupEdit()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAMPLE DEMO PRINTABLE INVOICE BILL -->
+    <div id="printable-bill" class="user-portrait">
+        <div class="bill-header">
+            <div class="shree-tag">SAMPLE PORTFOLIO DEMO — NOT A VALID INVOICE</div>
+            <div class="company-name">METROFAST EXPRESS CARGO (DEMO)</div>
+            <div class="company-subtitle">(A SAMPLE ROAD TRANSPORT BILLING DEMO)</div>
+            <div class="company-contacts">
+                H.O.: Sample Logistics Hub, Sector 12, Demo City - 400001.<br>
+                Phone: 90000 00001, 90000 00002 &nbsp;|&nbsp; Email: demo@example.com
+            </div>
+        </div>
+
+        <div class="bill-title-bar" id="printBillTitle">DELIVERY BILL / INVOICE</div>
+        <div id="printRouteBanner" class="route-banner-print" style="display: none;"></div>
+
+        <div class="bill-meta-box">
+            <div class="meta-col">
+                <div class="meta-row"><span class="lbl">Courier/Party:</span><span id="pPartyName" style="font-weight: 900; text-transform: uppercase;">-</span></div>
+                <div class="meta-row"><span class="lbl">Billing Period:</span><span id="pDuration" style="font-weight: 800;">-</span></div>
+            </div>
+            <div class="meta-col">
+                <div class="meta-row"><span class="lbl">Bill No:</span><span id="pBillNo" style="font-weight: 900;">-</span></div>
+                <div class="meta-row"><span class="lbl">Bill Date:</span><span id="pBillDate" style="font-weight: 800;">-</span></div>
+            </div>
+        </div>
+
+        <table class="print-table" id="printMainTable">
+            <thead id="printTableHead"></thead>
+            <tbody id="printTableBody"></tbody>
+        </table>
+
+        <div class="bill-footer">
+            <div>
+                <div style="font-weight: bold; margin-bottom: 3px;">Amount in Words:</div>
+                <div id="pAmountWords" style="font-style: italic; font-weight: 800; font-size: 13px;">Zero Rupees Only.</div>
+            </div>
+            <div class="sign-box">
+                <div>For <b>METROFAST EXPRESS CARGO (DEMO)</b></div>
+                <div style="border-top: 1.5px dashed #000; padding-top: 4px; font-weight: 900;">Authorised Signatory</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ENGINE CODE (ISOLATED DEMO STORAGE) -->
+    <script>
+        const STORAGE_KEY = "KDS_DEMO_CARGO_BILLING_V1";
+        const DIRECTORY_KEY = "KDS_DEMO_RECEIVER_DIRECTORY_V1";
+
+        let currentActiveMode = 'delivery';
+        let currentUserOrientation = 'portrait';
+        let activeColoadRoute = 'ALL';
+
+        function getOffsetDateStr(offsetDays) {
+            const d = new Date();
+            d.setDate(d.getDate() + offsetDays);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function getInitialDemoDirectory() {
+            return {
+                "Sharma Hardware (Demo)": "Pune",
+                "Patel Agencies (Demo)": "Nashik",
+                "Verma Electronics (Demo)": "Satara",
+                "GreenLeaf Pharma (Demo)": "Mumbai"
+            };
+        }
+
+        function loadDemoDirectorySafely() {
+            const raw = localStorage.getItem(DIRECTORY_KEY);
+            if (raw) {
+                try { return JSON.parse(raw); } catch(e) {}
+            }
+            const seed = getInitialDemoDirectory();
+            try { localStorage.setItem(DIRECTORY_KEY, JSON.stringify(seed)); } catch(e) {}
+            return seed;
+        }
+
+        let receiverDirectory = loadDemoDirectorySafely();
+
+        function setUserOrientation(orient) {
+            currentUserOrientation = orient;
+            const styleTag = document.getElementById('printOrientationStyle');
+            const previewEl = document.getElementById('printable-bill');
+
+            if (orient === 'landscape') {
+                styleTag.innerHTML = `@page { size: A4 landscape; margin: 6mm 6mm 6mm 6mm; }`;
+                previewEl.className = 'user-landscape';
+            } else {
+                styleTag.innerHTML = `@page { size: A4 portrait; margin: 6mm 5mm 6mm 5mm; }`;
+                previewEl.className = 'user-portrait';
+            }
+            renderPrintView();
+        }
+
+        function saveReceiverToDirectory(receiver, destination) {
+            receiver = (receiver || '').trim();
+            destination = (destination || '').trim();
+            if (receiver) {
+                receiverDirectory[receiver] = destination;
+                try {
+                    localStorage.setItem(DIRECTORY_KEY, JSON.stringify(receiverDirectory));
+                } catch(e) {}
+                refreshDataLists();
+            }
+        }
+
+        function refreshDataLists() {
+            const rList = document.getElementById('receiverList');
+            const dList = document.getElementById('destinationList');
+            const cList = document.getElementById('consignorList');
+            if (!rList || !dList || !cList) return;
+            rList.innerHTML = ''; dList.innerHTML = ''; cList.innerHTML = '';
+
+            const uniqueDestinations = new Set();
+            for (const [rec, dest] of Object.entries(receiverDirectory)) {
+                const optR = document.createElement('option'); optR.value = rec; rList.appendChild(optR);
+                const optC = document.createElement('option'); optC.value = rec; cList.appendChild(optC);
+                if (dest) uniqueDestinations.add(dest);
+            }
+            uniqueDestinations.forEach(dest => {
+                const optD = document.createElement('option'); optD.value = dest; dList.appendChild(optD);
+            });
+        }
+
+        function onReceiverSelected(val, targetDestId) {
+            val = (val || '').trim();
+            if (receiverDirectory[val]) {
+                const el = document.getElementById(targetDestId);
+                if (el) el.value = receiverDirectory[val];
+            }
+        }
+
+        function getCurrentFYString() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            let startYear = (month < 4) ? year - 1 : year;
+            return `${startYear.toString().slice(-2)}-${(startYear + 1).toString().slice(-2)}`;
+        }
+
+        function buildFormattedBillNo(seq) {
+            const fy = getCurrentFYString();
+            return `DEMO/${fy}/${String(seq).padStart(3, '0')}`;
+        }
+
+        function createNewCourierProfile(name) {
+            const today = getOffsetDateStr(0);
+            return {
+                id: 'courier_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                name: name,
+                billDate: today,
+                dateFrom: getOffsetDateStr(-15),
+                dateTo: today,
+                deliveryRates: {
+                    localBase: 50, localExtra: 5,
+                    odaBase: 120, odaExtra: 8,
+                    specBase: 200, specExtra: 12,
+                    oddBase: 150, oddExtra: 10,
+                    remoteBase: 250, remoteExtra: 15
+                },
+                coloadRates: { fixedRate: 30.00, kgMode: 'EVERY_KG', ratePerKg: 6.50 },
+                pickupRates: { baseCost: 60, addlPerKg: 6, fwdFixedRate: 40.00, fwdExtraChoice: 'PER_KG', fwdPerKgVal: 10.00 },
+                deliveryDockets: [],
+                coloadDockets: [],
+                pickupDockets: [],
+                history: []
+            };
+        }
+
+        function createInitialDemoDatabase() {
+            const d0 = getOffsetDateStr(0);
+            const d2 = getOffsetDateStr(-2);
+            const d4 = getOffsetDateStr(-4);
+            const d10 = getOffsetDateStr(-10);
+
+            const demoCourier1 = createNewCourierProfile("APEX EXPRESS COURIER (DEMO)");
+            demoCourier1.deliveryDockets = [
+                { id: 101, dktDate: d4, lrNo: "LR-1001", origin: "Pune", receiver: "Sharma Hardware (Demo)", destination: "Pune", boxes: 2, weight: 8.5, delType: "LOCAL", amount: 50, remark: "Door Delivery" },
+                { id: 102, dktDate: d2, lrNo: "LR-1002", origin: "Mumbai", receiver: "Patel Agencies (Demo)", destination: "Nashik", boxes: 4, weight: 16.0, delType: "ODA", amount: 168, remark: "Paid" },
+                { id: 103, dktDate: d0, lrNo: "LR-1003", origin: "Pune", receiver: "Verma Electronics (Demo)", destination: "Satara", boxes: 1, weight: 4.0, delType: "OFFICE HOLD", amount: 0, remark: "Counter Pickup" }
+            ];
+            demoCourier1.coloadDockets = [
+                { id: 201, clDate: d4, manifestNo: "MAN-501", origin: "Pune", destination: "Nashik", boxes: 6, weight: 32.0, amount: 238 },
+                { id: 202, clDate: d2, manifestNo: "MAN-502", origin: "Pune", destination: "Mumbai", boxes: 3, weight: 15.0, amount: 127.50 }
+            ];
+            demoCourier1.pickupDockets = [
+                { id: 301, pfDate: d2, dktNo: "PF-901", origin: "Pune", consignor: "GreenLeaf Pharma (Demo)", consignee: "Patel Agencies (Demo)", destination: "Nashik", boxes: 3, weight: 14.0, pickupAmt: 84, fwdAmt: 180, totalAmt: 264 }
+            ];
+            demoCourier1.history = [
+                {
+                    billType: "DELIVERY",
+                    billNo: buildFormattedBillNo(1),
+                    billDate: d10,
+                    dateFrom: getOffsetDateStr(-25),
+                    dateTo: d10,
+                    partyName: "APEX EXPRESS COURIER (DEMO)",
+                    totalCounts: 2,
+                    totalBoxes: 5,
+                    totalWeight: 22.0,
+                    totalAmount: 270.0,
+                    dockets: [
+                        { id: 91, dktDate: getOffsetDateStr(-20), lrNo: "LR-0981", origin: "Mumbai", receiver: "Sharma Hardware (Demo)", destination: "Pune", boxes: 2, weight: 9.0, delType: "LOCAL", amount: 50, remark: "Delivered" },
+                        { id: 92, dktDate: getOffsetDateStr(-15), lrNo: "LR-0985", origin: "Pune", receiver: "Patel Agencies (Demo)", destination: "Nashik", boxes: 3, weight: 13.0, delType: "SPECIAL", amount: 220, remark: "Priority" }
+                    ]
+                }
+            ];
+
+            const demoCourier2 = createNewCourierProfile("SUNRISE PARCELS (DEMO)");
+            demoCourier2.deliveryDockets = [
+                { id: 401, dktDate: d0, lrNo: "SR-2001", origin: "Mumbai", receiver: "GreenLeaf Pharma (Demo)", destination: "Mumbai", boxes: 1, weight: 5.0, delType: "LOCAL", amount: 50, remark: "Sample Entry" }
+            ];
+
+            return {
+                globalNextSeq: 2,
+                activeCourierId: demoCourier1.id,
+                couriers: [demoCourier1, demoCourier2]
+            };
+        }
+
+        function loadDatabaseSafely() {
+            const existing = localStorage.getItem(STORAGE_KEY);
+            if (existing) {
+                try {
+                    const parsed = JSON.parse(existing);
+                    if (parsed && parsed.couriers && parsed.couriers.length > 0) {
+                        return parsed;
+                    }
+                } catch(e) {}
+            }
+            const freshDemo = createInitialDemoDatabase();
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(freshDemo)); } catch(e) {}
+            return freshDemo;
+        }
+
+        let db = loadDatabaseSafely();
+
+        function persist() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+            } catch(e) {
+                console.warn("Demo storage warning.");
+            }
+        }
+
+        function resetDemoData() {
+            if (!confirm("Reset this demo back to the original sample data?")) return;
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(DIRECTORY_KEY);
+            receiverDirectory = loadDemoDirectorySafely();
+            db = loadDatabaseSafely();
+            loadCourierDropdown();
+            loadActiveCourier();
+            refreshDataLists();
+        }
+
+        function getActiveCourier() {
+            return db.couriers.find(c => c.id === db.activeCourierId) || db.couriers[0];
+        }
+
+        function getMasterActiveBillNo() {
+            return buildFormattedBillNo(db.globalNextSeq || 1);
+        }
+
+        window.onload = function() {
+            loadCourierDropdown();
+            loadActiveCourier();
+            refreshDataLists();
+            const today = getOffsetDateStr(0);
+            document.getElementById('dktDate').value = today;
+            document.getElementById('clDate').value = today;
+            document.getElementById('pfDate').value = today;
+            onDelWeightOrTypeChange();
+            onColoadWeightChange();
+            onPfWeightChange();
+        };
+
+        function loadCourierDropdown() {
+            const select = document.getElementById('courierSelect');
+            select.innerHTML = '';
+            db.couriers.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name;
+                if(c.id === db.activeCourierId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function createNewCourier() {
+            const name = prompt("Enter Name of New Demo Courier / Client:");
+            if (name && name.trim()) {
+                const newC = createNewCourierProfile(name.trim());
+                db.couriers.push(newC);
+                db.activeCourierId = newC.id;
+                persist();
+                loadCourierDropdown();
+                loadActiveCourier();
+            }
+        }
+
+        function deleteActiveCourier() {
+            const activeCourier = getActiveCourier();
+            if (db.couriers.length <= 1) {
+                alert("At least one courier profile must exist.");
+                return;
+            }
+            if (confirm(`Delete demo courier "${activeCourier.name}"?`)) {
+                db.couriers = db.couriers.filter(c => c.id !== activeCourier.id);
+                db.activeCourierId = db.couriers[0].id;
+                persist();
+                loadCourierDropdown();
+                loadActiveCourier();
+            }
+        }
+
+        function onCourierChange() {
+            db.activeCourierId = document.getElementById('courierSelect').value;
+            persist();
+            loadActiveCourier();
+        }
+
+        function loadActiveCourier() {
+            const c = getActiveCourier();
+
+            document.getElementById('billNo').value = getMasterActiveBillNo();
+            document.getElementById('billDate').value = c.billDate || getOffsetDateStr(0);
+            document.getElementById('partyName').value = c.name;
+            document.getElementById('dateFrom').value = c.dateFrom || getOffsetDateStr(0);
+            document.getElementById('dateTo').value = c.dateTo || getOffsetDateStr(0);
+
+            c.deliveryRates = c.deliveryRates || {
+                localBase: 50, localExtra: 5,
+                odaBase: 120, odaExtra: 8,
+                specBase: 200, specExtra: 12,
+                oddBase: 150, oddExtra: 10,
+                remoteBase: 250, remoteExtra: 15
+            };
+            document.getElementById('rateLocalBase').value = c.deliveryRates.localBase;
+            document.getElementById('rateLocalExtra').value = c.deliveryRates.localExtra;
+            document.getElementById('rateOdaBase').value = c.deliveryRates.odaBase;
+            document.getElementById('rateOdaExtra').value = c.deliveryRates.odaExtra;
+            document.getElementById('rateSpecBase').value = c.deliveryRates.specBase;
+            document.getElementById('rateSpecExtra').value = c.deliveryRates.specExtra;
+            document.getElementById('rateOddBase').value = c.deliveryRates.oddBase || 150;
+            document.getElementById('rateOddExtra').value = c.deliveryRates.oddExtra || 10;
+            document.getElementById('rateRemoteBase').value = c.deliveryRates.remoteBase || 250;
+            document.getElementById('rateRemoteExtra').value = c.deliveryRates.remoteExtra || 15;
+
+            c.coloadRates = c.coloadRates || { fixedRate: 30.00, kgMode: 'EVERY_KG', ratePerKg: 6.50 };
+            document.getElementById('coloadFixedRate').value = c.coloadRates.fixedRate;
+            document.getElementById('coloadKgMode').value = c.coloadRates.kgMode || 'EVERY_KG';
+            document.getElementById('coloadRatePerKg').value = c.coloadRates.ratePerKg;
+
+            c.pickupRates = c.pickupRates || { baseCost: 60, addlPerKg: 6, fwdFixedRate: 40.00, fwdExtraChoice: 'PER_KG', fwdPerKgVal: 10.00 };
+            document.getElementById('ratePkBase').value = c.pickupRates.baseCost;
+            document.getElementById('ratePkExtra').value = c.pickupRates.addlPerKg;
+            document.getElementById('rateFwdFixed').value = c.pickupRates.fwdFixedRate;
+            document.getElementById('rateFwdExtraChoice').value = c.pickupRates.fwdExtraChoice;
+            document.getElementById('rateFwdPerKgVal').value = c.pickupRates.fwdPerKgVal;
+
+            c.deliveryDockets = c.deliveryDockets || [];
+            c.coloadDockets = c.coloadDockets || [];
+            c.pickupDockets = c.pickupDockets || [];
+            c.history = c.history || [];
+
+            populateColoadRouteFilter();
+            renderDeliveryTable();
+            renderColoadTable();
+            renderPickupTable();
+            renderHistory();
+            renderPrintView();
+        }
+
+        function populateColoadRouteFilter() {
+            try {
+                const select = document.getElementById('coloadRouteFilter');
+                if (!select) return;
+
+                const c = getActiveCourier();
+                const currentVal = select.value || 'ALL';
+                select.innerHTML = '<option value="ALL">ALL ROUTES (Full Co-Loading Bill)</option>';
+
+                const routesSet = new Set();
+                (c.coloadDockets || []).forEach(d => {
+                    const orig = (d.origin || '').trim().toUpperCase();
+                    const dest = (d.destination || '').trim().toUpperCase();
+                    if(orig && dest) {
+                        routesSet.add(`${orig} -> ${dest}`);
+                    }
+                });
+
+                routesSet.forEach(route => {
+                    const opt = document.createElement('option');
+                    opt.value = route;
+                    opt.textContent = `ROUTE: ${route}`;
+                    if(route === currentVal) opt.selected = true;
+                    select.appendChild(opt);
+                });
+
+                activeColoadRoute = select.value || 'ALL';
+            } catch(e) {}
+        }
+
+        function onColoadRouteChange() {
+            const select = document.getElementById('coloadRouteFilter');
+            activeColoadRoute = select ? select.value : 'ALL';
+            renderPrintView();
+        }
+
+        function saveCourierDetails() {
+            const c = getActiveCourier();
+            c.billDate = document.getElementById('billDate').value;
+            c.name = document.getElementById('partyName').value || "Unnamed";
+            c.dateFrom = document.getElementById('dateFrom').value;
+            c.dateTo = document.getElementById('dateTo').value;
+
+            const sel = document.getElementById('courierSelect');
+            if (sel && sel.selectedIndex >= 0) {
+                sel.options[sel.selectedIndex].text = c.name;
+            }
+
+            persist();
+            renderPrintView();
+        }
+
+        function updateDeliveryRates() {
+            const c = getActiveCourier();
+            c.deliveryRates.localBase = parseFloat(document.getElementById('rateLocalBase').value) || 0;
+            c.deliveryRates.localExtra = parseFloat(document.getElementById('rateLocalExtra').value) || 0;
+            c.deliveryRates.odaBase = parseFloat(document.getElementById('rateOdaBase').value) || 0;
+            c.deliveryRates.odaExtra = parseFloat(document.getElementById('rateOdaExtra').value) || 0;
+            c.deliveryRates.specBase = parseFloat(document.getElementById('rateSpecBase').value) || 0;
+            c.deliveryRates.specExtra = parseFloat(document.getElementById('rateSpecExtra').value) || 0;
+            c.deliveryRates.oddBase = parseFloat(document.getElementById('rateOddBase').value) || 0;
+            c.deliveryRates.oddExtra = parseFloat(document.getElementById('rateOddExtra').value) || 0;
+            c.deliveryRates.remoteBase = parseFloat(document.getElementById('rateRemoteBase').value) || 0;
+            c.deliveryRates.remoteExtra = parseFloat(document.getElementById('rateRemoteExtra').value) || 0;
+            persist();
+        }
+
+        function updateColoadRates() {
+            const c = getActiveCourier();
+            c.coloadRates.fixedRate = parseFloat(document.getElementById('coloadFixedRate').value) || 0;
+            c.coloadRates.kgMode = document.getElementById('coloadKgMode').value;
+            c.coloadRates.ratePerKg = parseFloat(document.getElementById('coloadRatePerKg').value) || 0;
+            persist();
+            onColoadWeightChange();
+        }
+
+        function updatePickupRates() {
+            const c = getActiveCourier();
+            c.pickupRates.baseCost = parseFloat(document.getElementById('ratePkBase').value) || 0;
+            c.pickupRates.addlPerKg = parseFloat(document.getElementById('ratePkExtra').value) || 0;
+            c.pickupRates.fwdFixedRate = parseFloat(document.getElementById('rateFwdFixed').value) || 0;
+            c.pickupRates.fwdExtraChoice = document.getElementById('rateFwdExtraChoice').value;
+            c.pickupRates.fwdPerKgVal = parseFloat(document.getElementById('rateFwdPerKgVal').value) || 0;
+            persist();
+            onPfWeightChange();
+        }
+
+        function calculateDeliveryRate(type, weight, rates) {
+            if (type === 'OFFICE HOLD') return 0;
+            weight = parseFloat(weight) || 0;
+            let base = 0, extra = 0;
+            if (type === 'LOCAL') { base = rates.localBase; extra = rates.localExtra; }
+            else if (type === 'ODA') { base = rates.odaBase; extra = rates.odaExtra; }
+            else if (type === 'SPECIAL') { base = rates.specBase; extra = rates.specExtra; }
+            else if (type === 'ODD AREA') { base = rates.oddBase || 150; extra = rates.oddExtra || 10; }
+            else if (type === 'REMOTE AREA') { base = rates.remoteBase || 250; extra = rates.remoteExtra || 15; }
+            return (weight <= 10) ? base : base + ((weight - 10) * extra);
+        }
+
+        function onDelWeightOrTypeChange() {
+            const type = document.getElementById('delType').value;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const c = getActiveCourier();
+            const amt = calculateDeliveryRate(type, weight, c.deliveryRates);
+            document.getElementById('dktAmount').value = amt.toFixed(2);
+        }
+
+        function onColoadWeightChange() {
+            const weight = parseFloat(document.getElementById('clWeight').value) || 0;
+            const c = getActiveCourier();
+            const fixed = c.coloadRates.fixedRate || 0;
+            const perKg = c.coloadRates.ratePerKg || 0;
+            const mode = c.coloadRates.kgMode || 'EVERY_KG';
+
+            let amt = fixed;
+            if (mode === 'EVERY_KG') {
+                amt += (weight * perKg);
+            } else if (mode === 'ABOVE_10KG') {
+                if (weight > 10) {
+                    amt += ((weight - 10) * perKg);
+                }
+            }
+            document.getElementById('clAmount').value = amt.toFixed(2);
+        }
+
+        function onPfWeightChange() {
+            const weight = parseFloat(document.getElementById('pfWeight').value) || 0;
+            const c = getActiveCourier();
+            const pkRates = c.pickupRates;
+
+            let pkAmt = pkRates.baseCost;
+            if (weight > 10) pkAmt += (weight - 10) * pkRates.addlPerKg;
+
+            let fwdAmt = pkRates.fwdFixedRate || 0;
+            if (pkRates.fwdExtraChoice === 'PER_KG') {
+                fwdAmt += (weight * pkRates.fwdPerKgVal);
+            } else if (pkRates.fwdExtraChoice === 'ABOVE_10KG' && weight > 10) {
+                fwdAmt += ((weight - 10) * pkRates.fwdPerKgVal);
+            }
+
+            document.getElementById('pfPickupAmt').value = pkAmt.toFixed(2);
+            document.getElementById('pfFwdAmt').value = fwdAmt.toFixed(2);
+            updatePfTotalDisplay();
+        }
+
+        function updatePfTotalDisplay() {
+            const p = parseFloat(document.getElementById('pfPickupAmt').value) || 0;
+            const f = parseFloat(document.getElementById('pfFwdAmt').value) || 0;
+            document.getElementById('pfTotalAmt').value = (p + f).toFixed(2);
+        }
+
+        function sortByDateAsc(list, dateKey) {
+            if (!list || !Array.isArray(list)) return [];
+            return list.slice().sort((a, b) => {
+                const strA = (a[dateKey] || '').trim();
+                const strB = (b[dateKey] || '').trim();
+                return strA.localeCompare(strB);
+            });
+        }
+
+        function addDeliveryDocket() {
+            const dktDate = document.getElementById('dktDate').value || getOffsetDateStr(0);
+            const lrNo = document.getElementById('lrNo').value.trim();
+            const origin = document.getElementById('origin').value.trim();
+            const receiver = document.getElementById('receiver').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+            const boxes = parseInt(document.getElementById('boxes').value) || 1;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const delType = document.getElementById('delType').value;
+            const amount = parseFloat(document.getElementById('dktAmount').value) || 0;
+            const remark = (document.getElementById('dktRemark').value || '').trim();
+
+            if(!lrNo) { alert("Enter LR Number"); document.getElementById('lrNo').focus(); return; }
+            if(receiver) saveReceiverToDirectory(receiver, destination);
+
+            const c = getActiveCourier();
+            c.deliveryDockets.push({ id: Date.now(), dktDate, lrNo, origin, receiver, destination, boxes, weight, delType, amount, remark });
+            c.deliveryDockets = sortByDateAsc(c.deliveryDockets, 'dktDate');
+
+            persist();
+            renderDeliveryTable();
+            if (currentActiveMode === 'delivery') renderPrintView();
+
+            document.getElementById('lrNo').value = '';
+            document.getElementById('receiver').value = '';
+            document.getElementById('destination').value = '';
+            document.getElementById('weight').value = '';
+            document.getElementById('dktRemark').value = '';
+            onDelWeightOrTypeChange();
+            document.getElementById('lrNo').focus();
+        }
+
+        function addColoadDocket() {
+            const clDate = document.getElementById('clDate').value || getOffsetDateStr(0);
+            const manifestNo = (document.getElementById('clManifestNo').value || '').trim();
+            const origin = (document.getElementById('clOrigin').value || '').trim();
+            const destination = (document.getElementById('clDestination').value || '').trim();
+            const boxes = parseInt(document.getElementById('clBoxes').value) || 1;
+            const weight = parseFloat(document.getElementById('clWeight').value) || 0;
+            const amount = parseFloat(document.getElementById('clAmount').value) || 0;
+
+            if(!manifestNo) {
+                alert("Please enter Manifest / Docket Number!");
+                document.getElementById('clManifestNo').focus();
+                return;
+            }
+
+            if(destination) saveReceiverToDirectory('', destination);
+
+            const c = getActiveCourier();
+            c.coloadDockets = c.coloadDockets || [];
+            c.coloadDockets.push({
+                id: Date.now(),
+                clDate,
+                manifestNo,
+                origin,
+                destination,
+                boxes,
+                weight,
+                amount
+            });
+
+            c.coloadDockets = sortByDateAsc(c.coloadDockets, 'clDate');
+
+            persist();
+            populateColoadRouteFilter();
+            renderColoadTable();
+            if (currentActiveMode === 'coload') renderPrintView();
+
+            document.getElementById('clManifestNo').value = '';
+            document.getElementById('clDestination').value = '';
+            document.getElementById('clBoxes').value = '1';
+            document.getElementById('clWeight').value = '';
+            onColoadWeightChange();
+            document.getElementById('clManifestNo').focus();
+        }
+
+        function addPickupDocket() {
+            const pfDate = document.getElementById('pfDate').value || getOffsetDateStr(0);
+            const dktNo = document.getElementById('pfDktNo').value.trim();
+            const origin = document.getElementById('pfOrigin').value.trim();
+            const consignor = document.getElementById('pfConsignor').value.trim();
+            const consignee = document.getElementById('pfConsignee').value.trim();
+            const destination = document.getElementById('pfDestination').value.trim();
+            const boxes = parseInt(document.getElementById('pfBoxes').value) || 1;
+            const weight = parseFloat(document.getElementById('pfWeight').value) || 0;
+            const pickupAmt = parseFloat(document.getElementById('pfPickupAmt').value) || 0;
+            const fwdAmt = parseFloat(document.getElementById('pfFwdAmt').value) || 0;
+            const totalAmt = pickupAmt + fwdAmt;
+
+            if(!dktNo) { alert("Enter Docket Number"); document.getElementById('pfDktNo').focus(); return; }
+            if(consignee) saveReceiverToDirectory(consignee, destination);
+            if(consignor) saveReceiverToDirectory(consignor, origin);
+
+            const c = getActiveCourier();
+            c.pickupDockets.push({ id: Date.now(), pfDate, dktNo, origin, consignor, consignee, destination, boxes, weight, pickupAmt, fwdAmt, totalAmt });
+            c.pickupDockets = sortByDateAsc(c.pickupDockets, 'pfDate');
+
+            persist();
+            renderPickupTable();
+            if (currentActiveMode === 'pickup') renderPrintView();
+
+            document.getElementById('pfDktNo').value = '';
+            document.getElementById('pfConsignor').value = '';
+            document.getElementById('pfConsignee').value = '';
+            document.getElementById('pfDestination').value = '';
+            document.getElementById('pfBoxes').value = '1';
+            document.getElementById('pfWeight').value = '';
+            onPfWeightChange();
+            document.getElementById('pfDktNo').focus();
+        }
+
+        function deleteDeliveryDocket(id) {
+            const c = getActiveCourier();
+            c.deliveryDockets = c.deliveryDockets.filter(d => d.id !== id);
+            persist(); renderDeliveryTable();
+            if(currentActiveMode === 'delivery') renderPrintView();
+        }
+
+        function deleteColoadDocket(id) {
+            const c = getActiveCourier();
+            c.coloadDockets = c.coloadDockets.filter(d => d.id !== id);
+            persist();
+            populateColoadRouteFilter();
+            renderColoadTable();
+            if(currentActiveMode === 'coload') renderPrintView();
+        }
+
+        function deletePickupDocket(id) {
+            const c = getActiveCourier();
+            c.pickupDockets = c.pickupDockets.filter(d => d.id !== id);
+            persist(); renderPickupTable();
+            if(currentActiveMode === 'pickup') renderPrintView();
+        }
+
+        function clearActiveRows(type) {
+            const c = getActiveCourier();
+            if (confirm(`Clear all active entries for ${type}?`)) {
+                if(type === 'DELIVERY') c.deliveryDockets = [];
+                else if(type === 'COLOAD') c.coloadDockets = [];
+                else if(type === 'PICKUP_FWD') c.pickupDockets = [];
+                persist();
+                populateColoadRouteFilter();
+                renderDeliveryTable(); renderColoadTable(); renderPickupTable();
+                renderPrintView();
+            }
+        }
+
+        function openEditDelModal(id) {
+            const c = getActiveCourier();
+            const d = c.deliveryDockets.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('editDelId').value = d.id;
+            document.getElementById('editDelDate').value = d.dktDate;
+            document.getElementById('editDelLrNo').value = d.lrNo;
+            document.getElementById('editDelOrigin').value = d.origin;
+            document.getElementById('editDelReceiver').value = d.receiver;
+            document.getElementById('editDelDest').value = d.destination;
+            document.getElementById('editDelBoxes').value = d.boxes;
+            document.getElementById('editDelWeight').value = d.weight;
+            document.getElementById('editDelType').value = d.delType;
+            document.getElementById('editDelAmount').value = d.amount;
+            document.getElementById('editDelRemark').value = d.remark || '';
+            document.getElementById('editDelModal').style.display = 'flex';
+        }
+
+        function saveDeliveryEdit() {
+            const id = parseInt(document.getElementById('editDelId').value);
+            const c = getActiveCourier();
+            const d = c.deliveryDockets.find(x => x.id === id);
+            if (!d) return;
+            d.dktDate = document.getElementById('editDelDate').value;
+            d.lrNo = document.getElementById('editDelLrNo').value.trim();
+            d.origin = document.getElementById('editDelOrigin').value.trim();
+            d.receiver = document.getElementById('editDelReceiver').value.trim();
+            d.destination = document.getElementById('editDelDest').value.trim();
+            d.boxes = parseInt(document.getElementById('editDelBoxes').value) || 1;
+            d.weight = parseFloat(document.getElementById('editDelWeight').value) || 0;
+            d.delType = document.getElementById('editDelType').value;
+            d.amount = parseFloat(document.getElementById('editDelAmount').value) || 0;
+            d.remark = (document.getElementById('editDelRemark').value || '').trim();
+            if (d.delType === 'OFFICE HOLD') d.amount = 0;
+            if (d.receiver) saveReceiverToDirectory(d.receiver, d.destination);
+            c.deliveryDockets = sortByDateAsc(c.deliveryDockets, 'dktDate');
+            persist(); closeModal('editDelModal');
+            renderDeliveryTable();
+            if (currentActiveMode === 'delivery') renderPrintView();
+        }
+
+        function openEditColoadModal(id) {
+            const c = getActiveCourier();
+            const d = c.coloadDockets.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('editClId').value = d.id;
+            document.getElementById('editClDate').value = d.clDate;
+            document.getElementById('editClManifest').value = d.manifestNo;
+            document.getElementById('editClOrigin').value = d.origin;
+            document.getElementById('editClDest').value = d.destination;
+            document.getElementById('editClBoxes').value = d.boxes;
+            document.getElementById('editClWeight').value = d.weight;
+            document.getElementById('editClAmount').value = d.amount;
+            document.getElementById('editColoadModal').style.display = 'flex';
+        }
+
+        function saveColoadEdit() {
+            const id = parseInt(document.getElementById('editClId').value);
+            const c = getActiveCourier();
+            const d = c.coloadDockets.find(x => x.id === id);
+            if (!d) return;
+            d.clDate = document.getElementById('editClDate').value;
+            d.manifestNo = document.getElementById('editClManifest').value.trim();
+            d.origin = document.getElementById('editClOrigin').value.trim();
+            d.destination = document.getElementById('editClDest').value.trim();
+            d.boxes = parseInt(document.getElementById('editClBoxes').value) || 1;
+            d.weight = parseFloat(document.getElementById('editClWeight').value) || 0;
+            d.amount = parseFloat(document.getElementById('editClAmount').value) || 0;
+            c.coloadDockets = sortByDateAsc(c.coloadDockets, 'clDate');
+            persist(); closeModal('editColoadModal');
+            populateColoadRouteFilter();
+            renderColoadTable();
+            if (currentActiveMode === 'coload') renderPrintView();
+        }
+
+        function openEditPickupModal(id) {
+            const c = getActiveCourier();
+            const d = c.pickupDockets.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('editPfId').value = d.id;
+            document.getElementById('editPfDate').value = d.pfDate;
+            document.getElementById('editPfDktNo').value = d.dktNo;
+            document.getElementById('editPfOrigin').value = d.origin;
+            document.getElementById('editPfConsignor').value = d.consignor;
+            document.getElementById('editPfConsignee').value = d.consignee;
+            document.getElementById('editPfDest').value = d.destination;
+            document.getElementById('editPfBoxes').value = d.boxes;
+            document.getElementById('editPfWeight').value = d.weight;
+            document.getElementById('editPfPickupAmt').value = d.pickupAmt;
+            document.getElementById('editPfFwdAmt').value = d.fwdAmt;
+            document.getElementById('editPickupModal').style.display = 'flex';
+        }
+
+        function savePickupEdit() {
+            const id = parseInt(document.getElementById('editPfId').value);
+            const c = getActiveCourier();
+            const d = c.pickupDockets.find(x => x.id === id);
+            if (!d) return;
+            d.pfDate = document.getElementById('editPfDate').value;
+            d.dktNo = document.getElementById('editPfDktNo').value.trim();
+            d.origin = document.getElementById('editPfOrigin').value.trim();
+            d.consignor = document.getElementById('editPfConsignor').value.trim();
+            d.consignee = document.getElementById('editPfConsignee').value.trim();
+            d.destination = document.getElementById('editPfDest').value.trim();
+            d.boxes = parseInt(document.getElementById('editPfBoxes').value) || 1;
+            d.weight = parseFloat(document.getElementById('editPfWeight').value) || 0;
+            d.pickupAmt = parseFloat(document.getElementById('editPfPickupAmt').value) || 0;
+            d.fwdAmt = parseFloat(document.getElementById('editPfFwdAmt').value) || 0;
+            d.totalAmt = d.pickupAmt + d.fwdAmt;
+            if(d.consignee) saveReceiverToDirectory(d.consignee, d.destination);
+            c.pickupDockets = sortByDateAsc(c.pickupDockets, 'pfDate');
+            persist(); closeModal('editPickupModal');
+            renderPickupTable();
+            if(currentActiveMode === 'pickup') renderPrintView();
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function finalizeAndArchiveBill(type) {
+            const c = getActiveCourier();
+            let list = [];
+            if(type === 'DELIVERY') list = sortByDateAsc(c.deliveryDockets, 'dktDate');
+            else if(type === 'COLOAD') list = sortByDateAsc(c.coloadDockets, 'clDate');
+            else if(type === 'PICKUP_FWD') list = sortByDateAsc(c.pickupDockets, 'pfDate');
+
+            if (list.length === 0) { alert(`No ${type} entries to finalize.`); return; }
+
+            const assignedBillNo = getMasterActiveBillNo();
+
+            if (!confirm(`Finalize ${type} for ${c.name} under Bill No: ${assignedBillNo}?\n\nThis will archive all entries in chronological order inside the History tab.`)) return;
+
+            let tBoxes = 0, tWeight = 0, tAmount = 0;
+            list.forEach(d => {
+                tBoxes += d.boxes;
+                tWeight += (parseFloat(d.weight) || 0);
+                tAmount += (d.amount !== undefined) ? d.amount : d.totalAmt;
+            });
+
+            const record = {
+                billType: type,
+                billNo: assignedBillNo,
+                billDate: c.billDate || getOffsetDateStr(0),
+                dateFrom: c.dateFrom,
+                dateTo: c.dateTo,
+                partyName: c.name,
+                totalCounts: list.length,
+                totalBoxes: tBoxes,
+                totalWeight: tWeight,
+                totalAmount: tAmount,
+                dockets: JSON.parse(JSON.stringify(list))
+            };
+
+            c.history.unshift(record);
+            db.globalNextSeq = (db.globalNextSeq || 1) + 1;
+
+            if(type === 'DELIVERY') c.deliveryDockets = [];
+            else if(type === 'COLOAD') c.coloadDockets = [];
+            else if(type === 'PICKUP_FWD') c.pickupDockets = [];
+
+            persist();
+            loadActiveCourier();
+            alert(`✅ ${type} Bill finalized successfully!\n\nArchived Bill No: ${assignedBillNo}\nNext Demo Bill No: ${getMasterActiveBillNo()}`);
+        }
+
+        function switchMainTab(tab) {
+            currentActiveMode = tab;
+            document.getElementById('sectionDelivery').style.display = (tab === 'delivery') ? 'block' : 'none';
+            document.getElementById('sectionCoload').style.display = (tab === 'coload') ? 'block' : 'none';
+            document.getElementById('sectionPickup').style.display = (tab === 'pickup') ? 'block' : 'none';
+            document.getElementById('sectionHistory').style.display = (tab === 'history') ? 'block' : 'none';
+
+            document.getElementById('tabDeliveryBtn').className = 'tab-btn' + (tab === 'delivery' ? ' active-tab' : '');
+            document.getElementById('tabColoadBtn').className = 'tab-btn' + (tab === 'coload' ? ' active-tab' : '');
+            document.getElementById('tabPickupBtn').className = 'tab-btn' + (tab === 'pickup' ? ' active-tab' : '');
+            document.getElementById('tabHistoryBtn').className = 'tab-btn' + (tab === 'history' ? ' active-tab' : '');
+
+            populateColoadRouteFilter();
+            renderPrintView();
+        }
+
+        function formatDate(dStr) {
+            if(!dStr) return '-';
+            const p = dStr.split('-');
+            return (p.length === 3) ? `${p[2]}/${p[1]}/${p[0]}` : dStr;
+        }
+
+        function renderDeliveryTable() {
+            const c = getActiveCourier();
+            const tbody = document.getElementById('screenDeliveryTableBody');
+            tbody.innerHTML = '';
+            c.deliveryDockets = sortByDateAsc(c.deliveryDockets, 'dktDate');
+            c.deliveryDockets.forEach((d, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${i + 1}</td><td>${formatDate(d.dktDate)}</td><td><b>${d.lrNo}</b></td><td>${d.origin || '-'}</td><td>${d.receiver || '-'}</td><td>${d.destination || '-'}</td><td><span style="font-weight:bold; color:var(--accent);">${d.delType}</span></td><td>${d.boxes}</td><td>${(parseFloat(d.weight)||0).toFixed(2)}</td><td>₹ ${d.amount.toFixed(2)}</td>
+                        <td><small style="color:#64748b;">${d.remark || '-'}</small></td>
+                        <td style="white-space: nowrap;">
+                            <button class="btn btn-primary" style="padding: 2px 7px; font-size: 11px;" onclick="openEditDelModal(${d.id})">Edit</button>
+                            <button class="btn btn-danger" style="padding: 2px 7px; font-size: 11px;" onclick="deleteDeliveryDocket(${d.id})">Del</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderColoadTable() {
+            const c = getActiveCourier();
+            const tbody = document.getElementById('screenColoadTableBody');
+            tbody.innerHTML = '';
+            c.coloadDockets = sortByDateAsc(c.coloadDockets, 'clDate');
+            c.coloadDockets.forEach((d, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${i + 1}</td><td>${formatDate(d.clDate)}</td><td><b>${d.manifestNo}</b></td><td>${d.origin || '-'}</td><td>${d.destination || '-'}</td><td>${d.boxes}</td><td>${(parseFloat(d.weight)||0).toFixed(2)}</td><td>₹ ${d.amount.toFixed(2)}</td>
+                        <td style="white-space: nowrap;">
+                            <button class="btn btn-primary" style="padding: 2px 7px; font-size: 11px;" onclick="openEditColoadModal(${d.id})">Edit</button>
+                            <button class="btn btn-danger" style="padding: 2px 7px; font-size: 11px;" onclick="deleteColoadDocket(${d.id})">Del</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderPickupTable() {
+            const c = getActiveCourier();
+            const tbody = document.getElementById('screenPickupTableBody');
+            tbody.innerHTML = '';
+            c.pickupDockets = sortByDateAsc(c.pickupDockets, 'pfDate');
+            c.pickupDockets.forEach((d, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${i + 1}</td><td>${formatDate(d.pfDate)}</td><td><b>${d.dktNo}</b></td><td>${d.origin || '-'}</td><td>${d.consignor || '-'}</td><td>${d.consignee || '-'}</td><td>${d.destination || '-'}</td><td>${d.boxes}</td><td>${(parseFloat(d.weight)||0).toFixed(2)}</td><td>₹ ${d.pickupAmt.toFixed(2)}</td><td>₹ ${d.fwdAmt.toFixed(2)}</td><td><b>₹ ${d.totalAmt.toFixed(2)}</b></td>
+                        <td style="white-space: nowrap;">
+                            <button class="btn btn-primary" style="padding: 2px 7px; font-size: 11px;" onclick="openEditPickupModal(${d.id})">Edit</button>
+                            <button class="btn btn-danger" style="padding: 2px 7px; font-size: 11px;" onclick="deletePickupDocket(${d.id})">Del</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderHistory() {
+            const c = getActiveCourier();
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+            if(!c.history || c.history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 12px;">No past bills found for ${c.name}.</td></tr>`;
+                return;
+            }
+            c.history.forEach((h, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span style="font-weight:bold; color:var(--accent);">${h.billType}</span></td>
+                        <td><b>${h.billNo}</b></td>
+                        <td>${formatDate(h.billDate)}</td>
+                        <td>${formatDate(h.dateFrom)} to ${formatDate(h.dateTo)}</td>
+                        <td>${h.totalCounts} Dkts</td>
+                        <td>${h.totalBoxes}</td>
+                        <td>${(parseFloat(h.totalWeight)||0).toFixed(2)} Kg</td>
+                        <td style="white-space: nowrap !important; font-weight: bold;">₹ ${h.totalAmount.toFixed(2)}</td>
+                        <td style="text-align: center; white-space: nowrap;">
+                            <div class="history-action-box">
+                                <button class="btn btn-primary" onclick="viewArchivedBill(${idx})" title="View Bill Below">👁️ View</button>
+                                <button class="btn btn-success" onclick="reprintArchivedBill(${idx})" title="Direct Print this Invoice">🖨️ Print</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function viewArchivedBill(index) {
+            const c = getActiveCourier();
+            const h = c.history[index];
+            if (!h) return;
+            renderPrintView(h);
+            document.getElementById('printable-bill').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function reprintArchivedBill(index) {
+            const c = getActiveCourier();
+            const h = c.history[index];
+            if (!h) return;
+            renderPrintView(h);
+            setTimeout(() => {
+                window.print();
+            }, 100);
+        }
+
+        function renderPrintView(customRecord) {
+            const c = getActiveCourier();
+            const source = customRecord || c;
+            let mode = customRecord ? customRecord.billType : currentActiveMode;
+            if(mode === 'PICKUP_FWD') mode = 'pickup';
+            mode = mode.toLowerCase();
+
+            document.getElementById('pBillNo').innerText = customRecord ? customRecord.billNo : getMasterActiveBillNo();
+            document.getElementById('pBillDate').innerText = formatDate(source.billDate);
+            document.getElementById('pPartyName').innerText = source.name || source.partyName || '-';
+            document.getElementById('pDuration').innerText = (source.dateFrom && source.dateTo) ? `${formatDate(source.dateFrom)} to ${formatDate(source.dateTo)}` : 'Regular';
+
+            const routeBanner = document.getElementById('printRouteBanner');
+            const thead = document.getElementById('printTableHead');
+            const tbody = document.getElementById('printTableBody');
+            tbody.innerHTML = '';
+
+            let tBoxes = 0, tWeight = 0, tAmount = 0, tCount = 0;
+
+            if (mode === 'coload') {
+                document.getElementById('printBillTitle').innerText = "CO-LOADING BILL / INVOICE (DEMO)";
+
+                const rawList = customRecord ? customRecord.dockets : c.coloadDockets;
+                let list = sortByDateAsc(rawList, 'clDate');
+
+                if (activeColoadRoute && activeColoadRoute !== 'ALL') {
+                    routeBanner.style.display = 'block';
+                    routeBanner.innerText = `DISTRIBUTION ROUTE: ${activeColoadRoute}`;
+                    list = list.filter(d => {
+                        const r = `${(d.origin||'').trim().toUpperCase()} -> ${(d.destination||'').trim().toUpperCase()}`;
+                        return r === activeColoadRoute;
+                    });
+                } else {
+                    routeBanner.style.display = 'none';
+                }
+
+                thead.innerHTML = `
+                    <tr>
+                        <th style="width: 5%;">Sr.</th>
+                        <th style="width: 12%;">Date</th>
+                        <th style="width: 17%;">DKT / Manifest No</th>
+                        <th style="width: 15%;">Origin</th>
+                        <th>Destination</th>
+                        <th style="width: 6%;">Box</th>
+                        <th style="width: 12%;">Weight(Kg)</th>
+                        <th style="width: 15%;">Amount (₹)</th>
+                    </tr>
+                `;
+                
+                tCount = list.length;
+                list.forEach((d, i) => {
+                    const rowWt = parseFloat(d.weight) || 0;
+                    tBoxes += d.boxes;
+                    tWeight += rowWt;
+                    tAmount += d.amount;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="center"><b>${i + 1}</b></td>
+                            <td class="center"><b>${formatDate(d.clDate)}</b></td>
+                            <td class="center"><b>${d.manifestNo}</b></td>
+                            <td>${d.origin || '-'}</td>
+                            <td>${d.destination || '-'}</td>
+                            <td class="center"><b>${d.boxes}</b></td>
+                            <td class="right"><b>${rowWt.toFixed(2)}</b></td>
+                            <td class="right" style="white-space: nowrap !important;"><b>₹ ${d.amount.toFixed(2)}</b></td>
+                        </tr>
+                    `;
+                });
+
+                tbody.innerHTML += `
+                    <tr class="final-grand-total-row">
+                        <td colspan="5" style="text-align: right;">GRAND TOTAL:</td>
+                        <td class="center"><b>${tBoxes}</b></td>
+                        <td class="right"><b>${tWeight.toFixed(2)}</b></td>
+                        <td class="right" style="white-space: nowrap !important;"><b>₹ ${tAmount.toFixed(2)}</b></td>
+                    </tr>
+                `;
+            } else if (mode === 'pickup') {
+                routeBanner.style.display = 'none';
+                document.getElementById('printBillTitle').innerText = "PICKUP & FORWARDING BILL / INVOICE (DEMO)";
+                
+                thead.innerHTML = `
+                    <tr>
+                        <th style="width: 4%;">Sr.</th>
+                        <th style="width: 8%;">Date</th>
+                        <th style="width: 10%;">Dkt No</th>
+                        <th style="width: 9%;">Origin</th>
+                        <th style="width: 16%;">Consignor</th>
+                        <th style="width: 16%;">Consignee</th>
+                        <th style="width: 9%;">Destination</th>
+                        <th style="width: 4%;">Box</th>
+                        <th style="width: 6%;">Weight</th>
+                        <th style="width: 8%;">Pickup (₹)</th>
+                        <th style="width: 8%;">Fwd (₹)</th>
+                        <th style="width: 9%;">Total (₹)</th>
+                    </tr>
+                `;
+                const rawList = customRecord ? customRecord.dockets : c.pickupDockets;
+                const list = sortByDateAsc(rawList, 'pfDate');
+                tCount = list.length;
+                let tPickup = 0, tFwd = 0;
+                list.forEach((d, i) => {
+                    const rowWt = parseFloat(d.weight) || 0;
+                    tBoxes += d.boxes;
+                    tWeight += rowWt;
+                    tPickup += d.pickupAmt;
+                    tFwd += d.fwdAmt;
+                    tAmount += d.totalAmt;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="center"><b>${i + 1}</b></td>
+                            <td class="center"><b>${formatDate(d.pfDate)}</b></td>
+                            <td class="center"><b>${d.dktNo}</b></td>
+                            <td>${d.origin || '-'}</td>
+                            <td title="${d.consignor}"><b>${d.consignor || '-'}</b></td>
+                            <td title="${d.consignee}"><b>${d.consignee || '-'}</b></td>
+                            <td>${d.destination || '-'}</td>
+                            <td class="center"><b>${d.boxes}</b></td>
+                            <td class="right"><b>${rowWt.toFixed(2)}</b></td>
+                            <td class="right" style="white-space: nowrap !important;"><b>₹ ${d.pickupAmt.toFixed(2)}</b></td>
+                            <td class="right" style="white-space: nowrap !important;"><b>₹ ${d.fwdAmt.toFixed(2)}</b></td>
+                            <td class="right" style="white-space: nowrap !important;"><b>₹ ${d.totalAmt.toFixed(2)}</b></td>
+                        </tr>
+                    `;
+                });
+
+                tbody.innerHTML += `
+                    <tr class="final-grand-total-row">
+                        <td colspan="7" style="text-align: right;">GRAND TOTAL:</td>
+                        <td class="center"><b>${tBoxes}</b></td>
+                        <td class="right"><b>${tWeight.toFixed(2)}</b></td>
+                        <td class="right" style="white-space: nowrap !important;"><b>₹ ${tPickup.toFixed(2)}</b></td>
+                        <td class="right" style="white-space: nowrap !important;"><b>₹ ${tFwd.toFixed(2)}</b></td>
+                        <td class="right" style="white-space: nowrap !important;"><b>₹ ${tAmount.toFixed(2)}</b></td>
+                    </tr>
+                `;
+            } else {
+                routeBanner.style.display = 'none';
+                document.getElementById('printBillTitle').innerText = "DELIVERY BILL / INVOICE (DEMO)";
+
+                const includeRemark = document.getElementById('printDeliveryRemarkCheck') ? document.getElementById('printDeliveryRemarkCheck').checked : true;
+
+                if (includeRemark) {
+                    thead.innerHTML = `
+                        <tr>
+                            <th style="width: 4%;">Sr.</th>
+                            <th style="width: 9%;">Date</th>
+                            <th style="width: 12%;">LR / Dkt No</th>
+                            <th style="width: 9%;">Origin</th>
+                            <th>Receiver (Consignee)</th>
+                            <th style="width: 10%;">Destination</th>
+                            <th style="width: 10%;">Type</th>
+                            <th style="width: 4%;">Box</th>
+                            <th style="width: 8%;">Weight</th>
+                            <th style="width: 10%;">Amount (₹)</th>
+                            <th style="width: 10%;">Remark</th>
+                        </tr>
+                    `;
+                } else {
+                    thead.innerHTML = `
+                        <tr>
+                            <th style="width: 5%;">Sr.</th>
+                            <th style="width: 10%;">Date</th>
+                            <th style="width: 13%;">LR / Dkt No</th>
+                            <th style="width: 10%;">Origin</th>
+                            <th>Receiver (Consignee)</th>
+                            <th style="width: 11%;">Destination</th>
+                            <th style="width: 11%;">Type</th>
+                            <th style="width: 5%;">Box</th>
+                            <th style="width: 9%;">Weight(Kg)</th>
+                            <th style="width: 12%;">Amount (₹)</th>
+                        </tr>
+                    `;
+                }
+
+                const rawList = customRecord ? customRecord.dockets : c.deliveryDockets;
+                const list = sortByDateAsc(rawList, 'dktDate');
+                tCount = list.length;
+                list.forEach((d, i) => {
+                    const rowWt = parseFloat(d.weight) || 0;
+                    tBoxes += d.boxes;
+                    tWeight += rowWt;
+                    tAmount += d.amount;
+
+                    let rowHtml = `
+                        <tr>
+                            <td class="center"><b>${i + 1}</b></td>
+                            <td class="center"><b>${formatDate(d.dktDate)}</b></td>
+                            <td class="center"><b>${d.lrNo}</b></td>
+                            <td class="center">${d.origin || '-'}</td>
+                            <td title="${d.receiver}"><b>${d.receiver || '-'}</b></td>
+                            <td class="center">${d.destination || '-'}</td>
+                            <td class="center"><b>${d.delType}</b></td>
+                            <td class="center"><b>${d.boxes}</b></td>
+                            <td class="right"><b>${rowWt.toFixed(2)}</b></td>
+                            <td class="right" style="white-space: nowrap !important;"><b>₹ ${d.amount.toFixed(2)}</b></td>
+                    `;
+                    if (includeRemark) {
+                        rowHtml += `<td class="center"><small>${d.remark || '-'}</small></td>`;
+                    }
+                    rowHtml += `</tr>`;
+                    tbody.innerHTML += rowHtml;
+                });
+
+                const colspanVal = includeRemark ? 7 : 6;
+                tbody.innerHTML += `
+                    <tr class="final-grand-total-row">
+                        <td colspan="${colspanVal}" style="text-align: right;">GRAND TOTAL:</td>
+                        <td class="center"><b>${tBoxes}</b></td>
+                        <td class="right"><b>${tWeight.toFixed(2)}</b></td>
+                        <td class="right" style="white-space: nowrap !important;"><b>₹ ${tAmount.toFixed(2)}</b></td>
+                        ${includeRemark ? '<td></td>' : ''}
+                    </tr>
+                `;
+            }
+
+            if (tCount === 0) {
+                tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:12px; font-weight:bold;">No entries available to print.</td></tr>`;
+            }
+
+            document.getElementById('pAmountWords').innerText = numberToWords(Math.round(tAmount)) + ' Rupees Only.';
+        }
+
+        function printBill(type) {
+            currentActiveMode = type;
+            renderPrintView();
+            window.print();
+        }
+
+        function numberToWords(num) {
+            if (num === 0) return 'Zero';
+            const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+            const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            function inWords(n) {
+                if (n < 20) return a[n];
+                if (n < 100) return b[Math.floor(n / 10)] + ' ' + a[n % 10];
+                if (n < 1000) return inWords(Math.floor(n / 100)) + 'Hundred ' + (n % 100 !== 0 ? 'and ' + inWords(n % 100) : '');
+                if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 !== 0 ? inWords(n % 1000) : '');
+                if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 !== 0 ? inWords(n % 100000) : '');
+                return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 !== 0 ? inWords(n % 10000000) : '');
+            }
+            return inWords(num).trim();
+        }
+    </script>
+</body>
+</html>

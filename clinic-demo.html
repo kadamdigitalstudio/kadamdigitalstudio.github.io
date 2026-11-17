@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArogyaCare Clinic (Demo) | Kadam Digital Studio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    .demo-bar {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 10px 20px;
+      font-size: 0.88rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .demo-bar a {
+      background: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .demo-bar a:hover { background: #1d4ed8; }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0d9488;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #334155;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .nav-links a:hover { color: #0d9488; }
+
+    .hero {
+      background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%);
+      padding: 75px 0;
+      text-align: center;
+      border-bottom: 1px solid #ccfbf1;
+    }
+
+    .pill {
+      display: inline-block;
+      background: #ccfbf1;
+      color: #115e59;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: #0f172a;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 0 auto 28px;
+      color: #475569;
+      font-size: 1.05rem;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-teal { background: #0d9488; color: #ffffff; }
+    .btn-teal:hover { background: #0f766e; }
+    .btn-white { background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; }
+    .btn-white:hover { border-color: #0d9488; color: #0d9488; }
+
+    .timing-strip {
+      background: #0f766e;
+      color: #ffffff;
+      padding: 14px 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .timing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+      gap: 10px;
+      text-align: center;
+    }
+
+    section { padding: 65px 0; }
+
+    .sec-head {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .sec-head h2 { font-size: 1.9rem; margin-bottom: 8px; }
+    .sec-head p { color: #64748b; max-width: 540px; margin: 0 auto; }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .dept-tag {
+      display: inline-block;
+      background: #f0fdfa;
+      color: #0f766e;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      align-self: flex-start;
+    }
+
+    .card h3 { font-size: 1.12rem; margin-bottom: 6px; }
+    .card p { font-size: 0.9rem; color: #475569; margin-bottom: 14px; }
+    .doc-meta { font-size: 0.84rem; font-weight: 700; color: #334155; margin-bottom: 14px; }
+
+    .appt-section {
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .appt-box {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 28px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #334155;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.94rem;
+      background: #ffffff;
+    }
+
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: #0d9488;
+    }
+
+    .confirm-card {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 26px 20px;
+      color: #64748b;
+      font-size: 0.88rem;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <span><strong>Clinic Website Demo</strong> • Built by Kadam Digital Studio</span>
+    <a href="index.html">← Back to Kadam Digital Studio</a>
+  </div>
+
+  <header>
+    <div class="container nav">
+      <a href="#" class="brand">ArogyaCare Clinic</a>
+      <nav class="nav-links">
+        <a href="#departments">Departments & Doctors</a>
+        <a href="#appointment">Book Appointment</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <span class="pill">Trusted Family Healthcare (Demo)</span>
+      <h1>Compassionate Care & Easy Online Appointment Booking</h1>
+      <p>
+        Experienced general physicians, dental care, and diagnostics under one roof—book your clinic visit online in 30 seconds without waiting in long queues.
+      </p>
+      <div class="btn-row">
+        <a href="#appointment" class="btn btn-teal">Book Appointment</a>
+        <a href="#departments" class="btn btn-white">View Doctors</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="timing-strip">
+    <div class="container timing-grid">
+      <div>📍 Station Road, Demo City (Sample Clinic)</div>
+      <div>⏰ Mon–Sat: 9:30 AM – 8:30 PM</div>
+      <div>📞 Helpline: +91 90000 22222 (Demo)</div>
+    </div>
+  </div>
+
+  <section id="departments">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Specialists & Departments</h2>
+        <p>Click “Book Visit” on any specialist to pre-select that department in the appointment form.</p>
+      </div>
+
+      <div class="grid-cards">
+        <div class="card">
+          <div>
+            <span class="dept-tag">General Medicine</span>
+            <h3>Dr. Vikram Deshmukh</h3>
+            <p>Fever, diabetes management, blood pressure care, and routine health checkups.</p>
+            <div class="doc-meta">MBBS, MD • 12+ Yrs Experience</div>
+          </div>
+          <button type="button" class="btn btn-teal" style="width:100%;" onclick="chooseDept('General Medicine')">Book Visit →</button>
+        </div>
+
+        <div class="card">
+          <div>
+            <span class="dept-tag">Dental Care</span>
+            <h3>Dr. Sneha Kulkarni</h3>
+            <p>Painless root canal, scaling, teeth whitening, braces, and pediatric dental care.</p>
+            <div class="doc-meta">BDS, MDS • 8+ Yrs Experience</div>
+          </div>
+          <button type="button" class="btn btn-teal" style="width:100%;" onclick="chooseDept('Dental Care')">Book Visit →</button>
+        </div>
+
+        <div class="card">
+          <div>
+            <span class="dept-tag">Pediatrics</span>
+            <h3>Dr. Rohan Joshi</h3>
+            <p>Child growth monitoring, vaccinations, nutrition guidance, and newborn care.</p>
+            <div class="doc-meta">MBBS, DCH • 10+ Yrs Experience</div>
+          </div>
+          <button type="button" class="btn btn-teal" style="width:100%;" onclick="chooseDept('Pediatrics')">Book Visit →</button>
+        </div>
+
+        <div class="card">
+          <div>
+            <span class="dept-tag">Pathology & Lab</span>
+            <h3>In-House Diagnostics</h3>
+            <p>Fast blood tests, thyroid & lipid profiles, ECG, and digital reports on WhatsApp.</p>
+            <div class="doc-meta">Morning Fasting Tests from 7:30 AM</div>
+          </div>
+          <button type="button" class="btn btn-teal" style="width:100%;" onclick="chooseDept('Pathology & Lab')">Book Test →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="appointment" class="appt-section">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Book an Appointment</h2>
+        <p>Patients can pick a department, date, and convenient time slot right from their phone.</p>
+      </div>
+
+      <div class="appt-box">
+        <form onsubmit="submitAppt(event)">
+          <div class="form-grid">
+            <div class="field">
+              <label for="patName">Patient Full Name</label>
+              <input type="text" id="patName" placeholder="e.g. Priya Shinde" required />
+            </div>
+            <div class="field">
+              <label for="patPhone">Mobile / WhatsApp Number</label>
+              <input type="tel" id="patPhone" placeholder="e.g. 98765 00000" required />
+            </div>
+            <div class="field">
+              <label for="apptDept">Department</label>
+              <select id="apptDept">
+                <option value="General Medicine">General Medicine</option>
+                <option value="Dental Care">Dental Care</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="Pathology & Lab">Pathology & Lab</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="apptDate">Preferred Date</label>
+              <input type="date" id="apptDate" required />
+            </div>
+            <div class="field">
+              <label for="apptSlot">Time Slot</label>
+              <select id="apptSlot">
+                <option value="Morning (10:00 AM - 12:30 PM)">Morning (10:00 AM - 12:30 PM)</option>
+                <option value="Afternoon (1:00 PM - 3:30 PM)">Afternoon (1:00 PM - 3:30 PM)</option>
+                <option value="Evening (5:30 PM - 8:00 PM)">Evening (5:30 PM - 8:00 PM)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="patNote">Reason / Note (Optional)</label>
+              <input type="text" id="patNote" placeholder="Routine checkup, toothache, etc." />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-teal" style="width:100%;">Confirm Demo Appointment</button>
+        </form>
+
+        <div id="apptConfirm" class="confirm-card"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>ArogyaCare Clinic (Sample Demo Website) • Built by <strong>Kadam Digital Studio</strong></p>
+  </footer>
+
+  <script>
+    const dInput = document.getElementById("apptDate");
+    const now = new Date();
+    dInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+    function chooseDept(deptName) {
+      document.getElementById("apptDept").value = deptName;
+      document.getElementById("appointment").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function submitAppt(e) {
+      e.preventDefault();
+      const name = document.getElementById("patName").value.trim();
+      const dept = document.getElementById("apptDept").value;
+      const date = document.getElementById("apptDate").value;
+      const slot = document.getElementById("apptSlot").value;
+      const token = Math.floor(10 + Math.random() * 89);
+
+      const box = document.getElementById("apptConfirm");
+      box.style.display = "block";
+      box.textContent = `✅ Demo Token #${token} Reserved: ${name} for ${dept} on ${date} (${slot}). In a real clinic site, confirmation is sent directly via WhatsApp/SMS!`;
+    }
+  </script>
+</body>
+</html>
