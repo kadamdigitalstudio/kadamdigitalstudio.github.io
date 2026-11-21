@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Royal Courtyard Hotel & Garden Resort (Demo) | Kadam Digital Studio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fafaf9;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    /* Demo Bar */
+    .demo-bar {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 10px 18px;
+      font-size: 0.86rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .demo-bar a {
+      background: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.84rem;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    /* Navbar */
+    header {
+      background: #064e3b;
+      color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid #047857;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fcd34d;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .nav-links a {
+      color: #ecfdf5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .nav-links a:hover { color: #fcd34d; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #022c22 0%, #065f46 100%);
+      color: #ffffff;
+      padding: 85px 0 75px;
+      text-align: center;
+    }
+    .hero-pill {
+      display: inline-block;
+      background: rgba(252, 211, 77, 0.16);
+      border: 1px solid rgba(252, 211, 77, 0.45);
+      color: #fde68a;
+      padding: 5px 15px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.3rem);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      max-width: 660px;
+      margin: 0 auto 28px;
+      color: #d1fae5;
+      font-size: 1.06rem;
+    }
+    .btn-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+    .btn-gold { background: #d97706; color: #ffffff; }
+    .btn-gold:hover { background: #b45309; }
+    .btn-emerald { background: #059669; color: #ffffff; }
+    .btn-emerald:hover { background: #047857; }
+    .btn-ghost { background: transparent; color: #ffffff; border: 1.5px solid #6ee7b7; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+    /* Highlight Strip */
+    .strip {
+      background: #fef3c7;
+      border-bottom: 1px solid #fde68a;
+      padding: 14px 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #78350f;
+    }
+    .strip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+      gap: 10px;
+      text-align: center;
+    }
+
+    section { padding: 68px 0; }
+    .sec-head { text-align: center; margin-bottom: 36px; }
+    .sec-head h2 { font-size: 1.95rem; margin-bottom: 8px; color: #064e3b; }
+    .sec-head p { color: #57534e; max-width: 580px; margin: 0 auto; }
+
+    /* Stay Rooms Grid */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+      gap: 22px;
+    }
+
+    .room-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+    }
+    .room-banner {
+      padding: 18px 20px;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .banner-regular { background: linear-gradient(135deg, #334155, #475569); }
+    .banner-deluxe { background: linear-gradient(135deg, #065f46, #047857); }
+    .banner-premium { background: linear-gradient(135deg, #92400e, #d97706); }
+
+    .room-tier { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.9; }
+    .room-rate { font-size: 1.35rem; font-weight: 900; }
+    .room-rate small { font-size: 0.76rem; font-weight: 500; }
+
+    .room-body { padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .room-body h3 { font-size: 1.2rem; margin-bottom: 8px; }
+    .room-body p { font-size: 0.9rem; color: #475569; margin-bottom: 12px; }
+    .feature-list { list-style: none; margin-bottom: 18px; font-size: 0.88rem; color: #334155; }
+    .feature-list li { margin-bottom: 5px; }
+
+    /* Facilities (Open Garden, Terrace, etc.) */
+    .fac-sec {
+      background: #ecfdf5;
+      border-top: 1px solid #a7f3d0;
+      border-bottom: 1px solid #a7f3d0;
+    }
+    .fac-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+      gap: 18px;
+    }
+    .fac-card {
+      background: #ffffff;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .fac-icon { font-size: 1.7rem; margin-bottom: 8px; }
+    .fac-card h3 { font-size: 1.05rem; color: #064e3b; margin-bottom: 6px; }
+    .fac-card p { font-size: 0.88rem; color: #475569; }
+    .avail-badge {
+      display: inline-block;
+      margin-top: 8px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    /* Menu */
+    .filter-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .f-btn {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .f-btn.active { background: #064e3b; color: #fcd34d; border-color: #064e3b; }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 16px;
+    }
+    .dish-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .dish-card h4 { font-size: 1rem; margin-bottom: 4px; }
+    .dish-card p { font-size: 0.85rem; color: #64748b; }
+    .dish-price { font-weight: 900; color: #b45309; white-space: nowrap; }
+
+    /* Unified Online Booking Section */
+    .book-sec {
+      background: #f1f5f9;
+      border-top: 1px solid #e2e8f0;
+    }
+    .book-shell {
+      max-width: 780px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 6px 22px rgba(15, 23, 42, 0.06);
+    }
+
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .mode-btn {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      font-weight: 800;
+      font-size: 0.94rem;
+      cursor: pointer;
+      color: #334155;
+    }
+    .mode-btn.active {
+      background: #064e3b;
+      color: #fcd34d;
+      border-color: #064e3b;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #334155;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.94rem;
+      background: #fff;
+    }
+
+    .estimate-bar {
+      background: #ecfdf5;
+      border: 1.5px solid #6ee7b7;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .est-price { font-size: 1.35rem; font-weight: 900; color: #064e3b; }
+
+    .confirm-box {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    footer {
+      background: #022c22;
+      color: #a7f3d0;
+      text-align: center;
+      padding: 26px 16px;
+      font-size: 0.88rem;
+    }
+    footer strong { color: #fcd34d; }
+
+    @media (max-width: 540px) {
+      .mode-tabs { grid-template-columns: 1fr; }
+      .book-shell { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-bar">
+    <span><strong>Hotel, Stay Rooms & Garden Restaurant Demo</strong> • Kadam Digital Studio</span>
+    <a href="index.html">← Back to Kadam Digital Studio</a>
+  </div>
+
+  <header>
+    <div class="container nav">
+      <a href="#" class="brand">Royal Courtyard Hotel</a>
+      <nav class="nav-links">
+        <a href="#rooms">Stay Rooms</a>
+        <a href="#facilities">Garden & Terrace</a>
+        <a href="#menu">Restaurant Menu</a>
+        <a href="#booking">Online Booking</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <span class="hero-pill">Luxury Stay • Family Dining • Open Garden & Rooftop Terrace (Demo)</span>
+      <h1>Comfort Stay Rooms & Open-Air Dining Under One Roof</h1>
+      <p>
+        Book Regular or Premium stay rooms for 1 day or longer with optional Lunch & Dinner meal plans, or reserve a family table in our Open Garden Lawn and Rooftop Terrace.
+      </p>
+      <div class="btn-row">
+        <a href="#booking" class="btn btn-gold" onclick="switchBooking('room')">🛏️ Book Stay Room(s)</a>
+        <a href="#booking" class="btn btn-ghost" onclick="switchBooking('table')">🍽️ Reserve Dining Table</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="container strip-grid">
+      <div>📍 Shirdi–Ahilyanagar Highway (Demo Location)</div>
+      <div>🛎️ 24×7 Check-in & Room Service</div>
+      <div>🌿 Open Garden & Rooftop Terrace Available</div>
+      <div>📞 Reception: +91 90000 55555 (Demo)</div>
+    </div>
+  </div>
+
+  <!-- STAY ROOMS -->
+  <section id="rooms">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Stay Rooms (1 Day or Multi-Day Packages)</h2>
+        <p>Book a single room, dual rooms, or group stay—with flexible Room-Only or Lunch/Dinner meal plans.</p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Regular -->
+        <div class="room-card">
+          <div class="room-banner banner-regular">
+            <div>
+              <div class="room-tier">Budget Comfort</div>
+              <strong>Regular AC Room</strong>
+            </div>
+            <div class="room-rate">₹1,500<small>/night</small></div>
+          </div>
+          <div class="room-body">
+            <div>
+              <h3>Ideal for Solo & Couple Stays</h3>
+              <p>Clean, cozy room suitable for 1-day business trips or highway stopovers.</p>
+              <ul class="feature-list">
+                <li>✔ Queen Bed • Split AC & Hot Water</li>
+                <li>✔ Free Wi-Fi & Smart TV</li>
+                <li>✔ Optional Breakfast / Lunch / Dinner</li>
+              </ul>
+            </div>
+            <button type="button" class="btn btn-emerald" style="width:100%;" onclick="selectRoomType('Regular AC Room')">Book Regular Room →</button>
+          </div>
+        </div>
+
+        <!-- Deluxe -->
+        <div class="room-card">
+          <div class="room-banner banner-deluxe">
+            <div>
+              <div class="room-tier">Most Popular</div>
+              <strong>Deluxe Family Room</strong>
+            </div>
+            <div class="room-rate">₹2,400<small>/night</small></div>
+          </div>
+          <div class="room-body">
+            <div>
+              <h3>Spacious Stay for Families</h3>
+              <p>Extra floor space, garden-facing balcony, and option for dual connecting rooms.</p>
+              <ul class="feature-list">
+                <li>✔ King Bed + Extra Mattress Option</li>
+                <li>✔ Garden View Balcony & Tea Kettle</li>
+                <li>✔ Priority Dining Table Reservation</li>
+              </ul>
+            </div>
+            <button type="button" class="btn btn-emerald" style="width:100%;" onclick="selectRoomType('Deluxe Family Room')">Book Deluxe Room →</button>
+          </div>
+        </div>
+
+        <!-- Premium -->
+        <div class="room-card">
+          <div class="room-banner banner-premium">
+            <div>
+              <div class="room-tier">Luxury Experience</div>
+              <strong>Premium Garden Suite</strong>
+            </div>
+            <div class="room-rate">₹3,800<small>/night</small></div>
+          </div>
+          <div class="room-body">
+            <div>
+              <h3>VIP Suite & Living Lounge</h3>
+              <p>Top-tier stay with separate sitting area, premium interiors, and rooftop terrace access.</p>
+              <ul class="feature-list">
+                <li>✔ Separate Living Area & Mini Fridge</li>
+                <li>✔ Direct Rooftop Terrace & Lawn Access</li>
+                <li>✔ Complimentary Welcome Drink</li>
+              </ul>
+            </div>
+            <button type="button" class="btn btn-gold" style="width:100%;" onclick="selectRoomType('Premium Garden Suite')">Book Premium Suite →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FACILITIES: OPEN GARDEN, TERRACE & MORE -->
+  <section id="facilities" class="fac-sec">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Hotel Facilities & Dining Spaces</h2>
+        <p>Show guests everything your property offers—from open lawns to rooftop terrace dining.</p>
+      </div>
+      <div class="fac-grid">
+        <div class="fac-card">
+          <div class="fac-icon">🌿</div>
+          <h3>Open Garden Lawn Dining</h3>
+          <p>Spacious green lawn with evening lighting for family dinners, birthdays, and group gatherings.</p>
+          <span class="avail-badge">Available • Open Air</span>
+        </div>
+        <div class="fac-card">
+          <div class="fac-icon">🌇</div>
+          <h3>Rooftop Terrace Lounge</h3>
+          <p>Cool evening breeze, mocktails, live tandoor starters, and sunset views from the top floor.</p>
+          <span class="avail-badge">Available • 6 PM – 11 PM</span>
+        </div>
+        <div class="fac-card">
+          <div class="fac-icon">❄️</div>
+          <h3>AC Family Restaurant Hall</h3>
+          <p>Comfortable indoor AC dining hall serving hygienic Veg & Non-Veg Thalis and North Indian meals.</p>
+          <span class="avail-badge">Available • 7 AM – 11 PM</span>
+        </div>
+        <div class="fac-card">
+          <div class="fac-icon">🚗</div>
+          <h3>Free Parking & Banquet</h3>
+          <p>CCTV-secured car/bus parking, kids play area, high-speed Wi-Fi, and event hall booking.</p>
+          <span class="avail-badge">24×7 Security</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESTAURANT MENU -->
+  <section id="menu">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Hotel Restaurant Menu</h2>
+        <p>Available for both staying guests (room service) and walk-in dining customers.</p>
+      </div>
+
+      <div class="filter-row">
+        <button type="button" class="f-btn active" onclick="filterDishes('all', this)">All Dishes</button>
+        <button type="button" class="f-btn" onclick="filterDishes('starters', this)">Starters</button>
+        <button type="button" class="f-btn" onclick="filterDishes('meals', this)">Lunch & Dinner / Thali</button>
+        <button type="button" class="f-btn" onclick="filterDishes('drinks', this)">Drinks & Sweets</button>
+      </div>
+
+      <div class="menu-grid">
+        <div class="dish-card" data-cat="starters">
+          <div><h4>Paneer Tikka Angara</h4><p>Charcoal-roasted cottage cheese marinated in spiced yogurt.</p></div>
+          <span class="dish-price">₹260</span>
+        </div>
+        <div class="dish-card" data-cat="starters">
+          <div><h4>Crispy Veg Manchurian</h4><p>Wok-tossed vegetable dumplings in garlic soy glaze.</p></div>
+          <span class="dish-price">₹210</span>
+        </div>
+        <div class="dish-card" data-cat="meals">
+          <div><h4>Royal Maharashtrian Special Thali</h4><p>2 Sabjis, Dal, Jeera Rice, Bhakri/Chapati, Sweet, Papad & Buttermilk.</p></div>
+          <span class="dish-price">₹320</span>
+        </div>
+        <div class="dish-card" data-cat="meals">
+          <div><h4>Kaju Curry & Butter Naan Combo</h4><p>Rich cashew gravy served hot with 2 butter tandoori naans.</p></div>
+          <span class="dish-price">₹340</span>
+        </div>
+        <div class="dish-card" data-cat="drinks">
+          <div><h4>Fresh Solkadhi / Masala Taak</h4><p>Refreshing traditional digestive drink served chilled.</p></div>
+          <span class="dish-price">₹70</span>
+        </div>
+        <div class="dish-card" data-cat="drinks">
+          <div><h4>Hot Gulab Jamun with Ice Cream</h4><p>Soft syrupy gulab jamuns paired with chilled vanilla scoop.</p></div>
+          <span class="dish-price">₹130</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNIFIED ONLINE BOOKING (ROOMS OR TABLES) -->
+  <section id="booking" class="book-sec">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Online Room & Table Booking</h2>
+        <p>Customers can book 1 or multiple stay rooms with Lunch/Dinner choice, OR reserve a Garden/Terrace dining table.</p>
+      </div>
+
+      <div class="book-shell">
+        <div class="mode-tabs">
+          <button type="button" class="mode-btn active" id="tabRoomBtn" onclick="switchBooking('room')">🛏️ Book Stay Room(s)</button>
+          <button type="button" class="mode-btn" id="tabTableBtn" onclick="switchBooking('table')">🍽️ Book Dining Table</button>
+        </div>
+
+        <!-- FORM A: STAY ROOM BOOKING -->
+        <form id="roomForm" onsubmit="submitRoomBooking(event)">
+          <div class="form-grid">
+            <div class="field">
+              <label for="rGuestName">Guest Full Name</label>
+              <input type="text" id="rGuestName" placeholder="e.g. Suresh Pawar" required />
+            </div>
+            <div class="field">
+              <label for="rGuestPhone">Mobile / WhatsApp</label>
+              <input type="tel" id="rGuestPhone" placeholder="e.g. 98765 43210" required />
+            </div>
+            <div class="field">
+              <label for="rRoomType">Room Category</label>
+              <select id="rRoomType" onchange="updateEstimate()">
+                <option value="Regular AC Room" data-rate="1500">Regular AC Room (₹1,500 / night)</option>
+                <option value="Deluxe Family Room" data-rate="2400">Deluxe Family Room (₹2,400 / night)</option>
+                <option value="Premium Garden Suite" data-rate="3800">Premium Garden Suite (₹3,800 / night)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="rRoomCount">Number of Rooms</label>
+              <select id="rRoomCount" onchange="updateEstimate()">
+                <option value="1">1 Room</option>
+                <option value="2">2 Rooms (Dual Rooms)</option>
+                <option value="3">3 Rooms</option>
+                <option value="4">4 Rooms (Family Group)</option>
+                <option value="5">5+ Rooms</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="rCheckIn">Check-in Date</label>
+              <input type="date" id="rCheckIn" onchange="updateEstimate()" required />
+            </div>
+            <div class="field">
+              <label for="rDays">Stay Duration (Days / Nights)</label>
+              <select id="rDays" onchange="updateEstimate()">
+                <option value="1">1 Day / Night</option>
+                <option value="2">2 Days / Nights</option>
+                <option value="3">3 Days / Nights</option>
+                <option value="4">4 Days / Nights</option>
+                <option value="5">5 Days / Nights</option>
+                <option value="7">7 Days (1 Week)</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="rMealPlan">Meal Plan Choice (Lunch / Dinner / Breakfast)</label>
+              <select id="rMealPlan" onchange="updateEstimate()">
+                <option value="Room Only" data-meal="0">Room Only (No Meal Plan • +₹0)</option>
+                <option value="Breakfast Included" data-meal="250">With Morning Breakfast (+₹250 / room / day)</option>
+                <option value="Lunch OR Dinner" data-meal="450">With Lunch OR Dinner (+₹450 / room / day)</option>
+                <option value="Lunch + Dinner + Breakfast" data-meal="850">Full Board: Breakfast + Lunch + Dinner (+₹850 / room / day)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="estimate-bar">
+            <div>
+              <strong style="color:#064e3b;">Estimated Stay Total</strong>
+              <div id="estDetail" style="font-size:0.84rem; color:#047857;">1 Room × 1 Night • Check-out: -</div>
+            </div>
+            <div class="est-price" id="estAmount">₹1,500</div>
+          </div>
+
+          <button type="submit" class="btn btn-gold" style="width:100%;">Confirm Demo Room Booking</button>
+          <div id="roomConfirm" class="confirm-box"></div>
+        </form>
+
+        <!-- FORM B: TABLE / GARDEN / TERRACE BOOKING -->
+        <form id="tableForm" style="display:none;" onsubmit="submitTableBooking(event)">
+          <div class="form-grid">
+            <div class="field">
+              <label for="tName">Guest Name</label>
+              <input type="text" id="tName" placeholder="e.g. Meera Jadhav" required />
+            </div>
+            <div class="field">
+              <label for="tPhone">Mobile / WhatsApp</label>
+              <input type="tel" id="tPhone" placeholder="e.g. 98765 00000" required />
+            </div>
+            <div class="field">
+              <label for="tArea">Seating Area Preference</label>
+              <select id="tArea">
+                <option>Open Garden Lawn</option>
+                <option>Rooftop Terrace</option>
+                <option>Indoor AC Dining Hall</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tGuests">Number of Guests</label>
+              <select id="tGuests">
+                <option>2 Guests</option>
+                <option>4 Guests</option>
+                <option>6 Guests</option>
+                <option>10+ Family / Group Table</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tDate">Date</label>
+              <input type="date" id="tDate" required />
+            </div>
+            <div class="field">
+              <label for="tMeal">Dining Time (User Choice)</label>
+              <select id="tMeal">
+                <option>Lunch (12:30 PM – 3:00 PM)</option>
+                <option>Evening Tea & Snacks (5:00 PM – 7:00 PM)</option>
+                <option>Dinner (7:30 PM – 10:30 PM)</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-emerald" style="width:100%;">Confirm Demo Table Reservation</button>
+          <div id="tableConfirm" class="confirm-box"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Royal Courtyard Hotel & Garden Resort (Demo Website) • Designed & Built by <strong>Kadam Digital Studio</strong></p>
+  </footer>
+
+  <script>
+    function getTodayStr() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    document.getElementById("rCheckIn").value = getTodayStr();
+    document.getElementById("tDate").value = getTodayStr();
+
+    function switchBooking(mode) {
+      const isRoom = mode === "room";
+      document.getElementById("roomForm").style.display = isRoom ? "block" : "none";
+      document.getElementById("tableForm").style.display = isRoom ? "none" : "block";
+      document.getElementById("tabRoomBtn").className = "mode-btn" + (isRoom ? " active" : "");
+      document.getElementById("tabTableBtn").className = "mode-btn" + (!isRoom ? " active" : "");
+    }
+
+    function selectRoomType(roomName) {
+      switchBooking("room");
+      document.getElementById("rRoomType").value = roomName;
+      updateEstimate();
+      document.getElementById("booking").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function updateEstimate() {
+      const roomSel = document.getElementById("rRoomType");
+      const rate = parseFloat(roomSel.options[roomSel.selectedIndex].dataset.rate) || 0;
+      const rooms = parseInt(document.getElementById("rRoomCount").value) || 1;
+      const days = parseInt(document.getElementById("rDays").value) || 1;
+
+      const mealSel = document.getElementById("rMealPlan");
+      const mealRate = parseFloat(mealSel.options[mealSel.selectedIndex].dataset.meal) || 0;
+
+      const total = (rate + mealRate) * rooms * days;
+
+      // Calculate check-out date
+      const checkInVal = document.getElementById("rCheckIn").value;
+      let outStr = "-";
+      if (checkInVal) {
+        const dt = new Date(checkInVal + "T00:00:00");
+        dt.setDate(dt.getDate() + days);
+        outStr = dt.toLocaleDateString("en-IN");
+      }
+
+      document.getElementById("estAmount").textContent = "₹" + total.toLocaleString("en-IN");
+      document.getElementById("estDetail").textContent = `${rooms} Room(s) × ${days} Night(s) • ${mealSel.value} • Check-out: ${outStr}`;
+    }
+
+    function filterDishes(cat, btn) {
+      document.querySelectorAll(".f-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".dish-card").forEach(card => {
+        card.style.display = (cat === "all" || card.dataset.cat === cat) ? "flex" : "none";
+      });
+    }
+
+    function submitRoomBooking(e) {
+      e.preventDefault();
+      const name = document.getElementById("rGuestName").value.trim();
+      const room = document.getElementById("rRoomType").value;
+      const count = document.getElementById("rRoomCount").value;
+      const days = document.getElementById("rDays").value;
+      const date = document.getElementById("rCheckIn").value;
+      const meal = document.getElementById("rMealPlan").value;
+      const total = document.getElementById("estAmount").textContent;
+
+      const box = document.getElementById("roomConfirm");
+      box.style.display = "block";
+      box.textContent = `✅ Demo Stay Request Received: ${name} booked ${count} × ${room} for ${days} night(s) from ${date} (${meal}). Estimated Total: ${total}. (In a real hotel site, this booking goes straight to the hotel reception's WhatsApp & Email!)`;
+    }
+
+    function submitTableBooking(e) {
+      e.preventDefault();
+      const name = document.getElementById("tName").value.trim();
+      const area = document.getElementById("tArea").value;
+      const guests = document.getElementById("tGuests").value;
+      const date = document.getElementById("tDate").value;
+      const meal = document.getElementById("tMeal").value;
+
+      const box = document.getElementById("tableConfirm");
+      box.style.display = "block";
+      box.textContent = `✅ Demo Table Reserved: ${name} (${guests}) in ${area} on ${date} for ${meal}.`;
+    }
+
+    updateEstimate();
+  </script>
+</body>
+</html>
